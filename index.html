@@ -41,15 +41,16 @@
         .btn-danger:hover { background: #da4453 !important; }
         .hidden { display: none !important; }
         
-        /* 상단 버튼들 */
+        /* 상단 버튼들 (정보수정/로그아웃) - 눈에 잘 띄게 개선 */
         .top-btn-group {
-            position: absolute; top: 20px; left: 20px; z-index: 200; display: flex; gap: 10px;
+            position: absolute; top: 20px; left: 20px; z-index: 1000; display: flex; gap: 12px;
         }
         .top-btn {
-            background: rgba(0,0,0,0.5); color: white; border: 1px solid white; 
-            padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: bold; transition: 0.2s;
+            background: rgba(15, 20, 25, 0.85); color: white; border: 2px solid #4FC1E9; 
+            padding: 10px 20px; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 15px;
+            transition: all 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.5);
         }
-        .top-btn:hover { background: rgba(255,255,255,0.2); }
+        .top-btn:hover { background: #4FC1E9; color: #000; transform: translateY(-2px); }
 
         /* ---------------- 기존 게임 UI 스타일 ---------------- */
         #top-info {
@@ -169,7 +170,7 @@
         </div>
     </div>
 
-    <!-- 1-1. 유저 정보 수정/탈퇴 화면 -->
+    <!-- 1-1. 유저 정보 수정/탈퇴 화면 (모달창) -->
     <div id="profile-overlay" class="hidden">
         <div class="auth-box">
             <h2>내 정보 관리</h2>
@@ -182,9 +183,11 @@
 
     <!-- 2. 게임 전체 컨테이너 -->
     <div id="game-container" class="hidden">
+        
+        <!-- 🔥 로그인 후에 왼쪽 상단에 보이는 "정보수정" 및 "로그아웃" 버튼 🔥 -->
         <div class="top-btn-group">
+            <button class="top-btn" id="profile-btn">⚙️ 내 정보 설정 (수정/탈퇴)</button>
             <button class="top-btn" id="logout-btn">로그아웃</button>
-            <button class="top-btn" id="profile-btn">내 정보 설정</button>
         </div>
         
         <div id="game-overlay">
@@ -354,11 +357,13 @@
         const profileOverlay = document.getElementById('profile-overlay');
         const editNickInput = document.getElementById('edit-nickname');
         
+        // ⚙️ 내 정보 설정 버튼 클릭 시 팝업 열기
         profileBtn.addEventListener('click', () => {
             editNickInput.value = currentUserNickname;
             profileOverlay.classList.remove('hidden');
         });
         
+        // 닫기 버튼
         document.getElementById('edit-cancel-btn').addEventListener('click', () => { profileOverlay.classList.add('hidden'); });
         
         // 1. 닉네임 수정
@@ -396,8 +401,11 @@
             try {
                 const user = auth.currentUser;
                 if (!user) return alert('로그인 정보를 찾을 수 없습니다.');
+                // Firestore 문서 삭제
                 await deleteDoc(doc(db, "users", user.uid));
+                // Auth 계정 삭제
                 await deleteUser(user);
+                
                 alert("회원 탈퇴가 완료되었습니다. 이용해 주셔서 감사합니다.");
                 location.reload(); 
             } catch (error) {
