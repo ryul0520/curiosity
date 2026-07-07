@@ -34,8 +34,6 @@
         .auth-links a:hover { text-decoration: underline; }
         .btn-cancel { background: #888 !important; }
         .btn-cancel:hover { background: #666 !important; }
-        .btn-danger { background: #ED5565 !important; margin-top: 30px !important; }
-        .btn-danger:hover { background: #da4453 !important; }
         .hidden { display: none !important; }
         /* 상단 버튼들 (포기 버튼 및 연습 종료 버튼 포함) */
         .top-btn-group {
@@ -181,14 +179,14 @@
             <div class="auth-links">이미 계정이 있으신가요? <a id="show-login">로그인 하기</a></div>
         </div>
     </div>
-    <!-- 1-1. 유저 정보 수정/탈퇴 화면 -->
+    
+    <!-- 1-1. 유저 정보 수정 화면 -->
     <div id="profile-overlay" class="hidden">
         <div class="auth-box">
             <h2>내 정보 관리</h2>
             <input type="text" id="edit-nickname" placeholder="새로운 닉네임 입력">
             <button id="edit-save-btn">닉네임 변경 저장</button>
             <button id="edit-cancel-btn" class="btn-cancel">닫기</button>
-            <button id="delete-account-btn" class="btn-danger">회원 탈퇴</button>
         </div>
     </div>
     
@@ -367,8 +365,9 @@
     
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, deleteUser } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc, updateDoc, deleteDoc, collection, query, where, getDocs, orderBy, limit, addDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, query, where, getDocs, orderBy, limit, addDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        
         const firebaseConfig = {
             apiKey: "AIzaSyDq-LeNwUhHFTH641U3EfLwj0iMZ6gkHB4",
             authDomain: "mlb-legend-game.firebaseapp.com",
@@ -381,7 +380,6 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
         
-        // 🔥 totalScore (누적 획득 점수) 추가
         let lifetimeStats = { highScore: 0, totalScore: 0, totalHits: 0, totalDoubles: 0, totalTriples: 0, totalHomeruns: 0, totalWalks: 0, totalRBIs: 0 };
         let currentGameStats = { hits: 0, doubles: 0, triples: 0, homeruns: 0, walks: 0, rbis: 0 };
         let currentAtBatPitches = [];
@@ -417,7 +415,6 @@
                 const qs = await getDocs(q);
                 if (!qs.empty) return alert('경고: 이미 사용 중인 닉네임입니다.');
                 const userCredential = await createUserWithEmailAndPassword(auth, getFakeEmail(phone), pwd);
-                // 🔥 totalScore 필드 추가
                 await setDoc(doc(db, "users", userCredential.user.uid), {
                     nickname: nick, phone: phone, tutorialCompleted: false,
                     highScore: 0, totalScore: 0, totalHits: 0, totalDoubles: 0, totalTriples: 0, totalHomeruns: 0, totalWalks: 0, totalRBIs: 0
@@ -772,7 +769,6 @@
         async function saveGameStatsAndGameOver() {
             localStorage.removeItem('isAtBatActive');
             
-            // 🔥 통산 기록 누적
             lifetimeStats.totalScore += score;
             lifetimeStats.totalHits += currentGameStats.hits;
             lifetimeStats.totalDoubles += currentGameStats.doubles;
@@ -786,7 +782,7 @@
                 try {
                     await updateDoc(doc(db, "users", currentUserId), {
                         highScore: lifetimeStats.highScore,
-                        totalScore: lifetimeStats.totalScore, // DB에 누적점수 저장
+                        totalScore: lifetimeStats.totalScore,
                         totalHits: lifetimeStats.totalHits, 
                         totalDoubles: lifetimeStats.totalDoubles,
                         totalTriples: lifetimeStats.totalTriples, 
@@ -803,7 +799,6 @@
             document.getElementById('overlay-title').style.color = "#FFCE54";
             document.getElementById('overlay-desc').innerText = "최종 기록을 확인하세요.";
             
-            // UI 업데이트
             document.getElementById('res-score').innerText = score;
             document.getElementById('res-high-score').innerText = lifetimeStats.highScore;
             document.getElementById('res-total-score').innerText = lifetimeStats.totalScore;
