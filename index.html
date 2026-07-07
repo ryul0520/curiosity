@@ -35,11 +35,10 @@
         .btn-cancel { background: #888 !important; }
         .btn-cancel:hover { background: #666 !important; }
         .hidden { display: none !important; }
-        
         /* 🔥 상단 버튼들 */
         .top-btn-group {
-            position: absolute; top: 20px; left: 20px; z-index: 1000; 
-            display: flex; flex-direction: column; 
+            position: absolute; top: 20px; left: 20px; z-index: 1000;
+            display: flex; flex-direction: column;
             gap: 10px; align-items: flex-start;
         }
         .top-btn {
@@ -50,7 +49,6 @@
         .top-btn:hover { background: #4FC1E9; color: #000; transform: translateY(-2px); }
         #btn-practice-mode:hover { background: #48CFAD !important; color: #fff !important; text-shadow: 1px 1px 3px rgba(0,0,0,0.8); }
         #btn-show-tutorial:hover { background: #FFCE54 !important; color: #fff !important; text-shadow: 1px 1px 3px rgba(0,0,0,0.8); }
-        
         /* ---------------- 기존 게임 UI 스타일 ---------------- */
         #top-info {
             position: absolute; top: 20px; left: 50%; transform: translateX(-50%);
@@ -70,7 +68,6 @@
         #auto-load-msg { background: #FFCE54; color: #000; padding: 10px 20px; border-radius: 8px; font-size: 15px; font-weight: bold; display: inline-block; width: 100%; box-sizing: border-box; }
         #roster-status { margin-top: 10px; text-align: left; font-size: 13px; font-weight: bold; color: #ccc; line-height: 1.6; }
         .status-on { color: #A0D468; } .status-off { color: #ED5565; }
-        
         #scoreboard {
             position: absolute; top: 20px; right: 20px; background: rgba(15, 20, 25, 0.95);
             padding: 20px 25px; border-radius: 15px; border: 2px solid #555; z-index: 10; display: flex; flex-direction: column; gap: 15px; min-width: 170px; box-shadow: 0 6px 20px rgba(0,0,0,0.6);
@@ -92,7 +89,6 @@
         .circle.b-on { background: #A0D468; box-shadow: 0 0 10px #A0D468;}
         .circle.s-on { background: #FFCE54; box-shadow: 0 0 10px #FFCE54;}
         .circle.o-on { background: #ED5565; box-shadow: 0 0 10px #ED5565;}
-        
         #left-controls { position: absolute; bottom: 30px; left: 30px; z-index: 10; display: flex; flex-direction: column; gap: 15px; align-items: flex-start; }
         #dashboard { background: rgba(15, 20, 25, 0.95); padding: 20px 25px; border-radius: 12px; border: 2px solid #555; text-align: center; min-width: 200px; box-shadow: 0 4px 15px rgba(0,0,0,0.6); }
         #speed-display { font-size: 42px; font-weight: 900; color: #ccc; font-family: 'Arial Black', sans-serif; letter-spacing: -1px; margin: 15px 0 10px 0;}
@@ -100,24 +96,19 @@
         .matchup-text { font-size: 17px; font-weight: 900; margin: 8px 0; text-align: left; }
         #pitcher-info { color: #4FC1E9; border-bottom: 1px solid #444; padding-bottom: 10px; margin-bottom: 10px;}
         #batter-info { color: #A0D468; }
-        
         .btn-gamepad { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 15px 30px; font-size: 24px; font-weight: 900; border-radius: 50px; cursor: pointer; border: none; white-space: nowrap; color: white; box-shadow: 0 6px 0 rgba(0,0,0,0.4), 0 10px 20px rgba(0,0,0,0.5); transition: all 0.1s; text-transform: uppercase; }
         .btn-gamepad:active { transform: translateY(6px); box-shadow: 0 0 0 rgba(0,0,0,0.4), 0 4px 10px rgba(0,0,0,0.5); }
         .btn-gamepad:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; filter: grayscale(1); }
         .btn-pitch { background: linear-gradient(135deg, #AC92EC, #967ADC); border: 2px solid #fff; width: 100%;}
-        
         #right-controls { position: absolute; bottom: 30px; right: 30px; z-index: 10; display: flex; flex-direction: column; align-items: flex-end; }
         .btn-swing { background: linear-gradient(135deg, #48CFAD, #37BC9B); color: #000; border: 2px solid #fff; padding: 25px 50px; font-size: 32px;}
         .key-hint { font-size: 14px; opacity: 0.9; font-weight: bold; background: rgba(0,0,0,0.4); padding: 4px 10px; border-radius: 10px; color: #fff;}
-        
         #call-popup, #swing-popup { position: absolute; left: 50%; transform: translate(-50%, -50%) scale(0); font-family: 'Arial Black', sans-serif; font-weight: 900; text-transform: uppercase; text-align: center; text-shadow: 3px 3px 0px #000, -2px -2px 0px #000, 2px -2px 0px #000, -2px 2px 0px #000; opacity: 0; transition: transform 0.15s ease-out, opacity 0.15s ease-out; z-index: 30; pointer-events: none; line-height: 1.2; }
         #call-popup { top: 22%; font-size: 60px; }
         #swing-popup { top: 35%; font-size: 45px; }
         .show-call, .show-swing { transform: translate(-50%, -50%) scale(1) !important; opacity: 1 !important; }
         .loc-text { font-size: 22px; color: #FFD700; text-shadow: 2px 2px 4px #000; display: block; margin-top: -5px; }
-        
         #game-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 100; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; font-family: 'Malgun Gothic', sans-serif; transition: opacity 0.3s; overflow-y: auto;}
-        
         /* ---------------- 🔥 랭킹 / 결과 화면 디자인 ---------------- */
         .result-container {
             background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px);
@@ -182,7 +173,6 @@
             <div class="auth-links">이미 계정이 있으신가요? <a id="show-login">로그인 하기</a></div>
         </div>
     </div>
-    
     <!-- 1-1. 유저 정보 수정 화면 -->
     <div id="profile-overlay" class="hidden">
         <div class="auth-box">
@@ -192,7 +182,6 @@
             <button id="edit-cancel-btn" class="btn-cancel">닫기</button>
         </div>
     </div>
-    
     <!-- 1-2. 인게임 랭킹 및 통산기록 보기 -->
     <div id="records-overlay" class="hidden">
         <div class="result-container" style="background: rgba(15, 20, 25, 0.95); margin-top:0;">
@@ -225,7 +214,6 @@
         </div>
         <button id="close-records-btn" style="margin-top:20px; padding:15px 40px; font-size:20px; font-weight:bold; border-radius:12px; cursor:pointer; background:#ED5565; color:#fff; border:none;">닫기</button>
     </div>
-    
     <!-- 1-3. 튜토리얼 모달창 -->
     <div id="tutorial-overlay" class="hidden">
         <div class="tutorial-content">
@@ -244,7 +232,6 @@
             <button id="close-tutorial-btn">확인했습니다 (닫기)</button>
         </div>
     </div>
-    
     <!-- 2. 게임 전체 컨테이너 -->
     <div id="game-container" class="hidden">
         <div class="top-btn-group">
@@ -253,7 +240,6 @@
             <button class="top-btn" id="records-btn" style="border-color:#A0D468;">🏆 랭킹/기록</button>
             <button class="top-btn" id="giveup-btn" style="border-color:#ED5565;">🏳️ 게임 포기(재시작)</button>
             <button class="top-btn" id="logout-btn" style="border-color:#888;">로그아웃</button>
-            
             <select id="practice-pitcher-select" class="top-btn hidden" style="border-color:#4FC1E9; background: rgba(15, 20, 25, 0.95); color: #4FC1E9;">
                 <option value="오타니">⚾ 오타니 쇼헤이</option>
                 <option value="류현진">⚾ 류현진</option>
@@ -262,7 +248,6 @@
             </select>
             <button class="top-btn hidden" id="exit-practice-btn" style="border-color:#ED5565; background: #da4453; color: white;">🚪 연습 종료하고 본 게임 가기</button>
         </div>
-        
         <div id="game-overlay">
             <h1 id="overlay-title">⚾ 4이닝 레전드 매치</h1>
             <p id="overlay-welcome" style="font-size: 20px; margin-bottom: 5px;">환영합니다, <strong id="welcome-nick" style="color:#FFCE54;">타자</strong>님!</p>
@@ -271,7 +256,6 @@
                 <button id="btn-practice-mode" class="top-btn" style="position:static; border-color:#48CFAD; background: rgba(0,0,0,0.5); padding: 12px 30px; font-size: 18px; margin-bottom: 20px; transition: 0.3s; width: auto;">🏏 타격 연습장 </button>
                 <button id="btn-show-tutorial" class="top-btn" style="position:static; border-color:#FFCE54; background: rgba(0,0,0,0.5); padding: 12px 30px; font-size: 18px; margin-bottom: 20px; width: auto;">📖 게임 규칙 보기</button>
             </div>
-            
             <div id="game-result-container" class="result-container hidden">
                 <div class="stats-panel">
                     <div class="panel-title">내 기록 (이번 게임 / 통산)</div>
@@ -285,7 +269,6 @@
             </div>
             <button id="btn-start-game" disabled>데이터 다운로드 중...</button>
         </div>
-        
         <div id="top-info">
             <button id="btn-minimize" onclick="window.toggleTopInfo()">[—]</button>
             <h3>⚾ 서버 데이터 연동</h3>
@@ -302,7 +285,6 @@
                 </div>
             </div>
         </div>
-        
         <div id="scoreboard">
             <div class="inning-box"><span id="inning-display">1</span><span class="inning-total">/ 4 이닝</span></div>
             <div class="score-display">SCORE <span>:</span> <span id="run-score">0</span></div>
@@ -315,7 +297,6 @@
             <div class="count-row"><span class="count-letter S-color">S</span><div class="circle-container" id="strikes-ui"><div class="circle"></div><div class="circle"></div></div></div>
             <div class="count-row"><span class="count-letter O-color">O</span><div class="circle-container" id="outs-ui"><div class="circle"></div><div class="circle"></div></div></div>
         </div>
-        
         <div id="left-controls">
             <div id="dashboard">
                 <div class="matchup-text" id="pitcher-info">⚾ 투수: 대기 중</div>
@@ -328,16 +309,13 @@
         <div id="right-controls">
             <button class="btn-gamepad btn-swing" onclick="window.swingBat()" tabindex="-1">🏏 스윙 타격 <span class="key-hint">SPACE</span></button>
         </div>
-        
         <div id="call-popup">STRIKE</div>
         <div id="swing-popup">PERFECT!</div>
     </div>
-    
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, query, where, getDocs, orderBy, limit, addDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
-        
         const firebaseConfig = {
             apiKey: "AIzaSyDq-LeNwUhHFTH641U3EfLwj0iMZ6gkHB4",
             authDomain: "mlb-legend-game.firebaseapp.com",
@@ -349,7 +327,6 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        
         let lifetimeStats = { highScore: 0, totalScore: 0, totalHits: 0, totalDoubles: 0, totalTriples: 0, totalHomeruns: 0, totalWalks: 0 };
         let currentGameStats = { hits: 0, doubles: 0, triples: 0, homeruns: 0, walks: 0 };
         let currentAtBatPitches = [];
@@ -362,7 +339,6 @@
         let currentUserNickname = "타자";
         let currentUserId = null;
         let isLeftBatter = false;
-        
         function saveCurrentGameState() {
             if (gameState !== 'playing' || isPracticeMode) return;
             const state = {
@@ -376,21 +352,17 @@
             };
             localStorage.setItem('savedGameState', JSON.stringify(state));
         }
-
         document.getElementById('fullscreen-btn').addEventListener('click', () => {
             if (!document.fullscreenElement) {
                 document.documentElement.requestFullscreen().catch((err) => console.log(err));
             } else { document.exitFullscreen(); }
         });
-
         const tutorialOverlay = document.getElementById('tutorial-overlay');
         document.getElementById('btn-show-tutorial').addEventListener('click', () => tutorialOverlay.classList.remove('hidden'));
         document.getElementById('close-tutorial-btn').addEventListener('click', () => tutorialOverlay.classList.add('hidden'));
-        
         document.getElementById('show-signup').addEventListener('click', () => { loginBox.classList.add('hidden'); signupBox.classList.remove('hidden'); });
         document.getElementById('show-login').addEventListener('click', () => { signupBox.classList.add('hidden'); loginBox.classList.remove('hidden'); });
         function getFakeEmail(phone) { return phone.replace(/[^0-9]/g, '') + "@baseballgame.local"; }
-        
         document.getElementById('signup-btn').addEventListener('click', async () => {
             const phone = document.getElementById('signup-phone').value.trim();
             const pwd = document.getElementById('signup-pwd').value;
@@ -411,7 +383,6 @@
                 alert('회원가입 완료!');
             } catch (err) { alert('회원가입 실패: ' + err.message); }
         });
-        
         document.getElementById('login-btn').addEventListener('click', async () => {
             const phone = document.getElementById('login-phone').value.trim();
             const pwd = document.getElementById('login-pwd').value;
@@ -419,9 +390,7 @@
             try { await signInWithEmailAndPassword(auth, getFakeEmail(phone), pwd); }
             catch (err) { alert('전화번호나 비밀번호가 올바르지 않습니다.'); }
         });
-        
         document.getElementById('logout-btn').addEventListener('click', () => { signOut(auth).then(() => location.reload()); });
-        
         const profileBtn = document.getElementById('profile-btn');
         const profileOverlay = document.getElementById('profile-overlay');
         const editNickInput = document.getElementById('edit-nickname');
@@ -439,7 +408,6 @@
                 document.getElementById('welcome-nick').innerText = currentUserNickname;
             } catch (err) { alert('오류 발생: ' + err.message); }
         });
-        
         document.getElementById('giveup-btn').addEventListener('click', () => {
             if (gameState === 'playing' && !isPracticeMode) {
                 if (confirm("게임을 포기하시겠습니까?\n(포기 시 현재 저장된 진행 상황은 초기화되며, 통산 기록에 점수가 합산되지 않습니다.)")) {
@@ -449,7 +417,6 @@
                 }
             } else { location.reload(); }
         });
-        
         const recordsBtn = document.getElementById('records-btn');
         const recordsOverlay = document.getElementById('records-overlay');
         recordsBtn.addEventListener('click', () => {
@@ -461,7 +428,6 @@
             fetchAndShowRankings();
         });
         document.getElementById('close-records-btn').addEventListener('click', () => recordsOverlay.classList.add('hidden'));
-        
         async function fetchUserDataAndEnter(uid) {
             currentUserId = uid;
             const snap = await getDoc(doc(db, "users", uid));
@@ -478,12 +444,10 @@
             document.getElementById('welcome-nick').innerText = currentUserNickname;
             window.loadAllPitcherData(); fetchAndShowRankings();
         }
-        
         onAuthStateChanged(auth, (user) => {
             if (user) fetchUserDataAndEnter(user.uid);
             else { authOverlay.classList.remove('hidden'); loginBox.classList.remove('hidden'); signupBox.classList.add('hidden'); }
         });
-        
         let lastRankFetchTime = 0; let cachedRankHTML = { high: "", total: "", hr: "" };
         async function fetchAndShowRankings() {
             const now = Date.now();
@@ -509,9 +473,8 @@
                 ['rank-hr-view','rank-hr-res'].forEach(id => {if(document.getElementById(id)) document.getElementById(id).innerHTML=cachedRankHTML.hr;});
             } catch (e) {}
         }
-        
         function setPracticePitcher(isInitial = false) {
-            currentPitcherName = document.getElementById('practice-pitcher-select').value; 
+            currentPitcherName = document.getElementById('practice-pitcher-select').value;
             let pData = pitcherRoster[currentPitcherName];
             dataset = pData.csv; pitcherMotionData = pData.json;
             document.getElementById('pitcher-info').innerText = `⚾ 연습 투수: ${currentPitcherName}`;
@@ -522,58 +485,47 @@
                 setTimeout(() => { document.getElementById('btn-pitch-main').disabled = false; }, 2000);
             }, 500);
         }
-
         document.getElementById('practice-pitcher-select').addEventListener('change', () => { if(isPracticeMode) setPracticePitcher(false); });
-        
         document.getElementById('btn-practice-mode').addEventListener('click', () => {
             isPracticeMode = true; gameState = 'playing';
             ['game-overlay', 'profile-btn', 'records-btn', 'giveup-btn', 'logout-btn', 'fullscreen-btn', 'scoreboard'].forEach(id => document.getElementById(id).classList.add('hidden'));
             ['exit-practice-btn', 'practice-pitcher-select'].forEach(id => document.getElementById(id).classList.remove('hidden'));
             setPracticePitcher(true);
         });
-
         document.getElementById('exit-practice-btn').addEventListener('click', () => {
             isPracticeMode = false; gameState = 'intro'; resetToIdle();
             ['game-overlay', 'profile-btn', 'records-btn', 'giveup-btn', 'logout-btn', 'fullscreen-btn', 'scoreboard'].forEach(id => document.getElementById(id).classList.remove('hidden'));
             ['exit-practice-btn', 'practice-pitcher-select'].forEach(id => document.getElementById(id).classList.add('hidden'));
         });
-        
         window.startGame = function() {
             if (!tutorialCompleted) { alert("⚠️ 타격 연습장에서 1구 이상 쳐주세요."); return; }
             document.getElementById('call-popup').className = ''; document.getElementById('swing-popup').className = '';
             ball.visible = false; borderMarker.visible = false; gameState = 'playing';
             document.getElementById('game-overlay').classList.add('hidden'); document.getElementById('game-result-container').classList.add('hidden');
-            
             const savedState = localStorage.getItem('savedGameState');
             if (savedState) {
                 const state = JSON.parse(savedState);
                 currentInning = state.inning; score = state.score; outs = state.outs; bases = state.bases;
                 currentGameStats = state.stats; inningRotation = state.rotation; currentPitcherName = state.currentPitcher;
-                
                 if (localStorage.getItem('isAtBatActive') === 'true') {
                     strikes = 2; balls = 0;
                     alert("⚠️ 지난번 타석 진행 중 게임을 이탈했습니다.\n페널티로 [2 스트라이크]를 안고 타석을 이어갑니다!");
                 } else {
                     strikes = 0; balls = 0;
                 }
-                
                 localStorage.setItem('isAtBatActive', 'true');
                 setRandomBatter();
-                
                 let pData = pitcherRoster[currentPitcherName];
                 dataset = pData.csv; pitcherMotionData = pData.json;
                 document.getElementById('pitcher-info').innerText = `⚾ 투수: ${currentPitcherName} (${pData.hand === 'L' ? '좌완' : '우완'})`;
                 movementWeight = pData.weight; windupDuration = pData.windup / 1000.0; followThroughDuration = pData.followThrough / 1000.0;
-                
                 updatePitcherTransform(); updateScoreboardUI(); resetToIdle();
                 setTimeout(() => { showCallPopup("이어하기", "#4FC1E9", `${currentInning}이닝 재개`); setTimeout(() => { document.getElementById('btn-pitch-main').disabled = false; }, 2000); }, 500);
-
             } else {
                 inningRotation = [...PITCHER_NAMES].sort(() => Math.random() - 0.5);
                 currentInning = 1; strikes = 0; balls = 0; outs = 0; score = 0; bases = [false, false, false];
                 currentGameStats = { hits: 0, doubles: 0, triples: 0, homeruns: 0, walks: 0 };
                 currentAtBatPitches = [];
-                
                 if(localStorage.getItem('isAtBatActive') === 'true') {
                     strikes = 2;
                     alert("⚠️ 지난 게임에서 이탈했습니다.\n페널티로 [2 스트라이크]를 안고 시작합니다!");
@@ -582,9 +534,7 @@
                 setRandomBatter(); applyPitcherForInning(currentInning);
             }
         };
-        
         document.getElementById('btn-start-game').addEventListener('click', window.startGame);
-        
         const ballRadius = 0.0368; let movementWeight = 1.5; let windupDuration = 1.0; let followThroughDuration = 0.26;
         window.toggleTopInfo = function() { document.getElementById('top-info').classList.toggle('minimized'); }
         const PITCHER_NAMES = ["다르빗슈", "류현진", "오타니", "스쿠발"];
@@ -595,7 +545,6 @@
             "스쿠발": { csv: [], json: null, hand: 'L', weight: 1.6, windup: 900, followThrough: 120 }
         };
         let inningRotation = []; let currentPitcherName = ""; let dataset = []; let pitcherMotionData = null;
-        
         function parseCSVDataString(csvText) {
             let parsedData = [];
             const lines = csvText.trim().split('\n'); const delimiter = lines[0].includes('\t') ? '\t' : ',';
@@ -612,7 +561,6 @@
             }
             return parsedData;
         }
-        
         window.loadAllPitcherData = async function() {
             let allReady = true;
             for (let p of PITCHER_NAMES) {
@@ -628,7 +576,6 @@
             if (allReady) {
                 document.getElementById('auto-load-msg').innerText = "✅ 모든 데이터 다운로드 완료!";
                 document.getElementById('btn-start-game').disabled = false;
-                
                 if (localStorage.getItem('savedGameState')) {
                     document.getElementById('btn-start-game').innerText = "진행중인 게임 이어하기";
                 } else {
@@ -637,10 +584,8 @@
                 setTimeout(() => document.getElementById('top-info').classList.add('fade-out'), 1500);
             }
         };
-        
         let pitchStartTime = 0; let releaseFrameIndex = -1; let pitchThrownThisPlay = false; let isPitchingActive = false; let callPopupActive = false; let gameState = 'intro';
         let currentInning = 1; const maxInning = 4; let strikes = 0, balls = 0, outs = 0; let score = 0; let bases = [false, false, false]; let currentPitchRecord = null;
-        
         const battingProbabilities = {
             "Ball": { whiff: 41.16, foul: 34.99, single: 5.22, double: 0.98, triple: 0.09, homerun: 0.47, out: 17.09 },
             "1": { whiff: 19.12, foul: 47.31, single: 6.68, double: 2.04, triple: 0.18, homerun: 1.60, out: 23.08 },
@@ -654,7 +599,6 @@
             "9": { whiff: 22.76, foul: 35.73, single: 9.19, double: 2.38, triple: 0.11, homerun: 1.16, out: 28.68 }
         };
         Object.keys(battingProbabilities).forEach(key => { let p = battingProbabilities[key]; if (p.foul >= 7.0) { p.foul -= 7.0; p.single += 3.0; p.double += 2.0; p.triple += 1.0; p.homerun += 1.0; } });
-        
         function calculateSwingResultProbs(zoneProbs, absDiff, isBall, x, y) {
             if (absDiff >= 100) return { whiff: 100.0, foul: 0, single: 0, double: 0, triple: 0, homerun: 0, out: 0 };
             const baseWhiff = zoneProbs.whiff; let finalWhiff = 0;
@@ -680,9 +624,7 @@
             }
             return finalProbs;
         }
-        
         function pickResultFromProbs(probs) { let rand = Math.random() * 100; let cumulative = 0; for (const [o, p] of Object.entries(probs)) { cumulative += p; if (rand <= cumulative) return o; } return 'out'; }
-        
         function applyPitcherForInning(inning) {
             currentPitcherName = inningRotation[inning - 1]; let pData = pitcherRoster[currentPitcherName];
             dataset = pData.csv; pitcherMotionData = pData.json;
@@ -691,13 +633,11 @@
             updatePitcherTransform(); updateScoreboardUI(); resetToIdle();
             setTimeout(() => { showCallPopup("투수 등판!", "#4FC1E9", `${currentPitcherName}`); setTimeout(() => { document.getElementById('btn-pitch-main').disabled = false; }, 2000); }, 500);
         }
-        
         async function saveAtBatData(resultType) {
             if(!currentUserId || currentAtBatPitches.length === 0 || isPracticeMode) return;
             try { await addDoc(collection(db, "users", currentUserId, "pitchHistory"), { timestamp: Date.now(), inning: currentInning, pitcher: currentPitcherName, pitches: currentAtBatPitches, result: resultType }); } catch (e) {}
             currentAtBatPitches = [];
         }
-        
         async function saveGameStatsAndGameOver() {
             localStorage.removeItem('isAtBatActive');
             localStorage.removeItem('savedGameState');
@@ -708,32 +648,29 @@
             document.getElementById('res-score').innerText = score; document.getElementById('res-high-score').innerText = lifetimeStats.highScore; document.getElementById('res-total-score').innerText = lifetimeStats.totalScore; document.getElementById('res-hr').innerText = currentGameStats.homeruns; document.getElementById('res-total-hr').innerText = lifetimeStats.totalHomeruns; document.getElementById('res-hits').innerText = `${currentGameStats.hits}/${currentGameStats.doubles}/${currentGameStats.triples}/${currentGameStats.walks}`; document.getElementById('game-result-container').classList.remove('hidden');
             fetchAndShowRankings(); document.getElementById('btn-start-game').innerText = "새로운 게임 (리매치)"; document.getElementById('btn-start-game').disabled = false;
         }
-        
         function updateScoreboardUI() {
             document.getElementById('inning-display').innerText = currentInning > maxInning ? maxInning : currentInning; document.getElementById('run-score').innerText = score;
             document.getElementById('base-1').className = 'base base-1' + (bases[0] ? ' on' : ''); document.getElementById('base-2').className = 'base base-2' + (bases[1] ? ' on' : ''); document.getElementById('base-3').className = 'base base-3' + (bases[2] ? ' on' : '');
             document.querySelectorAll('#balls-ui .circle').forEach((c, i) => c.className = 'circle' + (i < balls ? ' b-on' : '')); document.querySelectorAll('#strikes-ui .circle').forEach((c, i) => c.className = 'circle' + (i < strikes ? ' s-on' : '')); document.querySelectorAll('#outs-ui .circle').forEach((c, i) => c.className = 'circle' + (i < outs ? ' o-on' : ''));
         }
-        
         /* 🔥 고도화된 주루 시스템 */
         function advanceBases(hitType) {
             let runsScored = 0;
-
             if (hitType === 'walk') {
-                if (bases[0] && bases[1] && bases[2]) runsScored = 1; 
-                else if (bases[0] && bases[1]) bases[2] = true; 
-                else if (bases[0]) bases[1] = true; 
+                if (bases[0] && bases[1] && bases[2]) runsScored = 1;
+                else if (bases[0] && bases[1]) bases[2] = true;
+                else if (bases[0]) bases[1] = true;
                 bases[0] = true;
             }
             else if (hitType === 'single') {
                 let nextBases = [false, false, false];
                 if (bases[2]) runsScored++;
                 if (bases[1]) {
-                    if (Math.random() < 0.8) runsScored++; 
+                    if (Math.random() < 0.8) runsScored++;
                     else nextBases[2] = true;
                 }
                 if (bases[0]) {
-                    if (!nextBases[2] && Math.random() < 0.3) nextBases[2] = true; 
+                    if (!nextBases[2] && Math.random() < 0.3) nextBases[2] = true;
                     else nextBases[1] = true;
                 }
                 nextBases[0] = true;
@@ -744,7 +681,7 @@
                 if (bases[2]) runsScored++;
                 if (bases[1]) runsScored++;
                 if (bases[0]) {
-                    if (Math.random() < 0.4) runsScored++; 
+                    if (Math.random() < 0.4) runsScored++;
                     else nextBases[2] = true;
                 }
                 nextBases[1] = true;
@@ -761,7 +698,7 @@
             else if (hitType === 'doubleplay') {
                 bases[0] = false; // 1루 주자 아웃
                 if (outs === 0) { // 무사에서 친 병살타
-                    if (bases[2]) { runsScored++; bases[2] = false; } 
+                    if (bases[2]) { runsScored++; bases[2] = false; }
                     if (bases[1]) { bases[2] = true; bases[1] = false; }
                 } else { // 1사에서 친 병살타면 쓰리아웃
                     bases = [false, false, false];
@@ -799,34 +736,30 @@
                 bases[1] = bases[0];
                 bases[0] = true;
             }
-
             if (runsScored > 0 && outs <= 2) {
                 score += runsScored;
             }
         }
-        
         /* 🔥 고도화된 아웃 판정 및 타석 결과 처리 */
         function processPitchResult(type) {
             if (gameState !== 'playing') return;
             if (isPracticeMode) { setTimeout(() => { document.getElementById('btn-pitch-main').disabled = false; }, 2500); return; }
             let atBatOver = false; let finalResult = type;
             if (currentPitchRecord) { currentPitchRecord.result = type; currentAtBatPitches.push({...currentPitchRecord}); currentPitchRecord = null; }
-            
-            if (type === 'strike' || type === 'whiff') { 
-                strikes++; 
-                if (strikes >= 3) { outs++; resetCount(); atBatOver = true; finalResult = 'strikeout'; showCallPopup("삼진 아웃!", "#ED5565"); } 
+            if (type === 'strike' || type === 'whiff') {
+                strikes++;
+                if (strikes >= 3) { outs++; resetCount(); atBatOver = true; finalResult = 'strikeout'; showCallPopup("삼진 아웃!", "#ED5565"); }
             }
-            else if (type === 'ball') { 
-                balls++; 
-                if (balls >= 4) { resetCount(); atBatOver = true; advanceBases('walk'); currentGameStats.walks++; finalResult = 'walk'; showCallPopup("볼넷 (출루)", "#A0D468"); } 
+            else if (type === 'ball') {
+                balls++;
+                if (balls >= 4) { resetCount(); atBatOver = true; advanceBases('walk'); currentGameStats.walks++; finalResult = 'walk'; showCallPopup("볼넷 (출루)", "#A0D468"); }
             }
             else if (type === 'foul') { if (strikes < 2) strikes++; }
-            
-            else if (['out', 'groundout', 'flyout', 'lineout', 'popup', 'sac_fly', 'groundout_advance'].includes(type)) { 
-                advanceBases(type); outs++; resetCount(); atBatOver = true; 
+            else if (['out', 'groundout', 'flyout', 'lineout', 'popup', 'sac_fly', 'groundout_advance'].includes(type)) {
+                advanceBases(type); outs++; resetCount(); atBatOver = true;
             }
-            else if (type === 'doubleplay' || type === 'line_drive_dp') { 
-                advanceBases(type); outs += 2; resetCount(); atBatOver = true; 
+            else if (type === 'doubleplay' || type === 'line_drive_dp') {
+                advanceBases(type); outs += 2; resetCount(); atBatOver = true;
             }
             else if (type === 'fielders_choice' || type === 'error') {
                 advanceBases(type); resetCount(); atBatOver = true;
@@ -836,10 +769,8 @@
                 else if (type === 'triple') currentGameStats.triples++; else if (type === 'homerun') currentGameStats.homeruns++;
                 advanceBases(type); resetCount(); atBatOver = true;
             }
-            
             updateScoreboardUI();
             saveCurrentGameState();
-
             if (atBatOver) {
                 saveAtBatData(finalResult);
                 if (outs < 3 && currentInning <= maxInning) localStorage.setItem('isAtBatActive', 'true');
@@ -847,9 +778,9 @@
             }
             if (outs >= 3) {
                 outs = 0; resetCount(); bases = [false, false, false]; currentInning++; atBatOver = true;
-                if (currentInning > maxInning) { 
+                if (currentInning > maxInning) {
                     localStorage.removeItem('savedGameState');
-                    setTimeout(saveGameStatsAndGameOver, 2500); 
+                    setTimeout(saveGameStatsAndGameOver, 2500);
                 } else {
                     document.getElementById('btn-pitch-main').disabled = true; showCallPopup(`${currentInning-1}이닝 종료`, "#ccc", "공수교대"); updateScoreboardUI();
                     setTimeout(() => { applyPitcherForInning(currentInning); localStorage.setItem('isAtBatActive', 'true'); saveCurrentGameState(); }, 2500);
@@ -863,7 +794,6 @@
             popup.innerHTML = `<span style="color:${color}">${text}</span>${subText ?` <br><span class="loc-text">${subText}</span>` : ''}`; popup.className = "show-call";
             setTimeout(() => { popup.className = ''; setTimeout(resetToIdle, 200); }, 2000);
         }
-        
         /* ---------------- Three.js Scene Setup ---------------- */
         const scene = new THREE.Scene(); scene.background = new THREE.Color(0x7FB3D5); const camera = new THREE.PerspectiveCamera(38, window.innerWidth / window.innerHeight, 0.1, 1000); camera.position.set(0, 1.3, 1.5); camera.lookAt(0, 0.75, -18.4);
         const renderer = new THREE.WebGLRenderer({ antialias: true }); renderer.setSize(window.innerWidth, window.innerHeight); document.body.appendChild(renderer.domElement);
@@ -878,7 +808,6 @@
         const leftBox = new THREE.LineSegments(boxGeo, boxMat); leftBox.rotation.x = -Math.PI / 2; leftBox.position.set(-1.0, 0.02, homePlateCenterZ); scene.add(leftBox); const rightBox = new THREE.LineSegments(boxGeo, boxMat); rightBox.rotation.x = -Math.PI / 2; rightBox.position.set(1.0, 0.02, homePlateCenterZ); scene.add(rightBox);
         const frontZ = homePlateCenterZ - 0.215; const absZone = { left: -0.215, right: 0.215, bottom: 0.45, top: 1.05, zFront: frontZ };
         const zoneGeo = new THREE.PlaneGeometry(absZone.right - absZone.left, absZone.top - absZone.bottom); const strikeZone = new THREE.Group(); strikeZone.add(new THREE.LineSegments(new THREE.EdgesGeometry(zoneGeo), new THREE.LineBasicMaterial({ color: 0xff0000, linewidth: 2 }))); strikeZone.add(new THREE.Mesh(zoneGeo, new THREE.MeshBasicMaterial({ color: 0xff0000, transparent: true, opacity: 0.15, side: THREE.DoubleSide }))); strikeZone.position.set(0, (absZone.top + absZone.bottom) / 2, absZone.zFront); scene.add(strikeZone);
-        
         function createBaseballTexture() { const cvs = document.createElement('canvas'); cvs.width = 512; cvs.height = 512; const ctx = cvs.getContext('2d'); ctx.fillStyle = '#F4F4F0'; ctx.fillRect(0, 0, 512, 512); ctx.fillStyle = '#1A237E'; ctx.font = "bold 70px 'Arial Black'"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("MLB", 256, 256); ctx.strokeStyle = '#D32F2F'; ctx.lineWidth = 22; ctx.setLineDash([18, 14]); ctx.beginPath(); ctx.arc(-100, 256, 320, -Math.PI/2.2, Math.PI/2.2); ctx.stroke(); ctx.beginPath(); ctx.arc(612, 256, 320, Math.PI - Math.PI/2.2, Math.PI + Math.PI/2.2); ctx.stroke(); return new THREE.CanvasTexture(cvs); }
         const ball = new THREE.Mesh(new THREE.SphereGeometry(ballRadius, 32, 32), new THREE.MeshStandardMaterial({ map: createBaseballTexture() })); ball.renderOrder = 20; scene.add(ball); ball.visible = false;
         const borderMarker = new THREE.Mesh(new THREE.CircleGeometry(ballRadius * 1.2, 32), new THREE.MeshBasicMaterial({ color: 0xFFFF00, transparent: true, opacity: 0.9, side: THREE.DoubleSide, depthTest: false })); borderMarker.renderOrder = 999; scene.add(borderMarker); borderMarker.visible = false;
@@ -900,18 +829,16 @@
             pCtx.restore(); pitcherTexture.needsUpdate = true;
         }
         drawPitcherState(0);
-        
         const batterCanvas = document.createElement('canvas'); batterCanvas.width = 512; batterCanvas.height = 512; const bCtx = batterCanvas.getContext('2d'); const batterTexture = new THREE.CanvasTexture(batterCanvas); const batterSprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: batterTexture, color: 0xffffff, transparent: true })); scene.add(batterSprite);
         function setRandomBatter() { isLeftBatter = Math.random() < 0.5; batterSprite.position.set(isLeftBatter ? 1.2 : -1.2, 1.2, -2.5); batterSprite.scale.set(3.0, 3.0, 1); const infoEl = document.getElementById('batter-info'); if(infoEl) infoEl.innerText = `🏏 타자: ${currentUserNickname} (${isLeftBatter ? '좌타' : '우타'})`; drawBatterState(0); }
         function drawBatterState(state, ballPlateY = 0.75, isMiss = false) {
             bCtx.clearRect(0, 0, 512, 512); let cx, cy, batTargetX, batTargetY; const length = 250;
-            if (state === 0) { cx = isLeftBatter ? 512 - 220 : 220; cy = 350; let angle = isLeftBatter ? -Math.PI + 1.5 : -1.5; batTargetX = cx + Math.cos(angle)* length; batTargetY = cy + Math.sin(angle)* length; }
+            if (state === 0) { cx = isLeftBatter ? 512 - 220 : 220; cy = 350; let angle = isLeftBatter ? -Math.PI + 1.5 : -1.5; batTargetX = cx + Math.cos(angle) * length; batTargetY = cy + Math.sin(angle) * length; }
             else if (state === 1) { let clampedY = Math.max(0.0, Math.min(ballPlateY, 1.5)); let mappedTargetY = 420 - ((clampedY - 0.2) / 1.0) * 200; if (isMiss) mappedTargetY += (clampedY > 0.75) ? 60 : -60; cx = isLeftBatter ? 512 - 150 : 150; cy = mappedTargetY + 20; batTargetX = isLeftBatter ? cx - length : cx + length; batTargetY = mappedTargetY; }
-            else if (state === 2) { cx = isLeftBatter ? 512 - 250 : 250; cy = 250; let angle = isLeftBatter ? -Math.PI * 0.25 : -Math.PI * 0.75; batTargetX = cx + Math.cos(angle)* length; batTargetY = cy + Math.sin(angle)* length; }
+            else if (state === 2) { cx = isLeftBatter ? 512 - 250 : 250; cy = 250; let angle = isLeftBatter ? -Math.PI * 0.25 : -Math.PI * 0.75; batTargetX = cx + Math.cos(angle) * length; batTargetY = cy + Math.sin(angle) * length; }
             const angle = Math.atan2(batTargetY - cy, batTargetX - cx); bCtx.save(); bCtx.translate(cx, cy); bCtx.rotate(angle); bCtx.beginPath(); bCtx.arc(0, 0, 8, Math.PI/2, Math.PI*1.5); bCtx.lineTo(length * 0.15, -4); bCtx.lineTo(length * 0.4, -14); bCtx.lineTo(length - 14, -14); bCtx.arc(length - 14, 0, 14, -Math.PI/2, Math.PI/2); bCtx.lineTo(length * 0.4, 14); bCtx.lineTo(length * 0.15, 4); bCtx.closePath(); bCtx.fillStyle = "#1a1a1a"; bCtx.fill(); bCtx.lineWidth = 1.0; bCtx.strokeStyle = "#333333"; bCtx.stroke(); bCtx.restore(); batterTexture.needsUpdate = true;
         }
         drawBatterState(0);
-        
         let currentPitch = null, t = 0, targetT = 0; let ballState = 'idle'; let callMade = false, hasSwung = false, zoneCrossed = false; let crossX = 0, crossY = 0; let hitVel = { x: 0, y: 0, z: 0 };
         function getPosition(p, time) { return { x: p.x0 + p.vx0 * time + 0.5 * p.ax * time * time, y: p.y0 + p.vy0 * time + 0.5 * p.ay * time * time, z: p.z0 + p.vz0 * time + 0.5 * p.az * time * time }; }
         function getZoneNumber(x, y) {
@@ -921,7 +848,6 @@
             let col = cx < absZone.left + colW ? 1 : (cx < absZone.left + colW * 2 ? 2 : 3); let row = cy > absZone.top - rowH ? 1 : (cy > absZone.top - rowH * 2 ? 2 : 3);
             return ((row - 1) * 3 + col).toString();
         }
-        
         window.startPitching = function() {
             if (gameState !== 'playing' || isPitchingActive || callPopupActive || dataset.length === 0) return;
             if (isPracticeMode && !tutorialCompleted) { tutorialCompleted = true; if (currentUserId) updateDoc(doc(db, "users", currentUserId), { tutorialCompleted: true }).catch(e => console.error(e)); }
@@ -941,40 +867,45 @@
             updatePitcherTransform(); document.getElementById('speed-display').innerText = "???"; document.getElementById('speed-display').style.color = "#777"; document.getElementById('pitch-name').innerText = "투구 준비 중..."; pitchStartTime = performance.now(); pitchThrownThisPlay = false; ballState = 'prepare';
             currentPitchRecord = { pitchName: currentPitch.name, speedKm: currentPitch.speedKm, isStrikeZone: false, crossX: null, crossY: null, swung: false, timingMs: null, result: null };
         }
-        
         function throwPitch() { ball.position.set(currentPitch.x0, currentPitch.y0, currentPitch.z0); ball.visible = true; document.getElementById('speed-display').innerText = currentPitch.speedKm + " km/h"; document.getElementById('speed-display').style.color = "#FFCE54"; document.getElementById('pitch-name').innerText = currentPitch.name; t = 0; ballState = 'pitching'; }
         function resetToIdle() { ballState = 'idle'; ball.visible = false; borderMarker.visible = false; if(!pitcherMotionData) drawPitcherState(0); else drawJSONPitcherState(0); drawBatterState(0); callPopupActive = false; isPitchingActive = false; if (gameState === 'playing') document.getElementById('btn-pitch-main').disabled = false; }
-        
         /* 🔥 다채로운 타격 궤적 & 판정 생성 */
         window.swingBat = function() {
             if (ballState !== 'pitching' || callMade || gameState !== 'playing') return; callMade = true; hasSwung = true; callPopupActive = true;
             const expectedPos = getPosition(currentPitch, targetT); const pitchZone = getZoneNumber(expectedPos.x, expectedPos.y); const isBall = (pitchZone === "Ball");
             borderMarker.position.set(expectedPos.x, expectedPos.y, absZone.zFront + 0.005); borderMarker.material.color.setHex(!isBall ? 0xFFCE54 : 0xA0D468); borderMarker.visible = true; zoneCrossed = true;
             let diffMs = Math.round((t - targetT) * 1000); let absDiff = Math.abs(diffMs); let timingText = `<br><span style="font-size:22px; color:#fff">${diffMs > 0 ? 'LATE +'+diffMs : 'EARLY '+diffMs} ms</span>`;
-            if (currentPitchRecord) { currentPitchRecord.isStrikeZone = !isBall; currentPitchRecord.swung = true; currentPitchRecord.timingMs = diffMs; }
+            if (currentPitchRecord) {
+                currentPitchRecord.isStrikeZone = !isBall;
+                currentPitchRecord.swung = true;
+                currentPitchRecord.timingMs = diffMs;
+                // 🔥 [추가된 부분]
+                // 만약 유저가 일찍 스윙해서 아직 애니메이션 루프에서 좌표를 못 넣었다면 여기서 예상 좌표를 강제로 넣어줍니다.
+                if (currentPitchRecord.crossX === null || currentPitchRecord.crossY === null) {
+                    currentPitchRecord.crossX = Number(expectedPos.x.toFixed(4));
+                    currentPitchRecord.crossY = Number(expectedPos.y.toFixed(4));
+                }
+            }
             const baseProbs = battingProbabilities[pitchZone]; const finalProbs = calculateSwingResultProbs(baseProbs, absDiff, isBall, expectedPos.x, expectedPos.y);
             const resultOutcome = pickResultFromProbs(finalProbs); let isMiss = (resultOutcome === 'whiff');
             drawBatterState(1, expectedPos.y, isMiss); setTimeout(() => { if(ballState !== 'idle') drawBatterState(2); }, 70); const popup = document.getElementById('swing-popup');
             if (isMiss) { popup.innerHTML = `<span style="color:#ED5565">헛스윙!</span>` + timingText; popup.className = "show-swing"; processPitchResult('whiff'); setTimeout(() => { popup.className = ''; setTimeout(resetToIdle, 200); }, 2000); return; }
-            
             ballState = 'hit'; t = 0; let resultType, resultName, resultColor; let pullDir = isLeftBatter ? 1 : -1;
-            
             if (resultOutcome === 'homerun') { resultType = 'homerun'; resultName = "홈런!!"; resultColor = "#FFCE54"; hitVel = {x: (Math.random()-0.5)*20 + pullDir*10, y: 35, z: -80}; }
             else if (resultOutcome === 'triple') { resultType = 'triple'; resultName = "3루타!"; resultColor = "#4FC1E9"; hitVel = {x: (Math.random()>0.5?30:-30), y: 15, z: -50}; }
             else if (resultOutcome === 'double') { resultType = 'double'; resultName = "2루타!"; resultColor = "#4FC1E9"; hitVel = {x: (Math.random()-0.5)*35, y: 15, z: -40}; }
             else if (resultOutcome === 'single') { resultType = 'single'; resultName = "안타!"; resultColor = "#A0D468"; hitVel = {x: (Math.random()-0.5)*20, y: 5, z: -30}; }
             else if (resultOutcome === 'foul') { resultType = 'foul'; resultName = "파울"; resultColor = "#ccc"; hitVel = {x: (Math.random()>0.5?30:-30), y: 10, z: 10}; }
-            else { 
+            else {
                 // 범타(Out) 상황 세분화 설계 (땅볼, 뜬공, 직선타, 내야뜬공)
                 let randHit = Math.random();
                 let isGroundball = false, isFlyball = false, isLinedrive = false, isPopup = false;
-                
                 if (randHit < 0.45) { // 땅볼 45%
                     isGroundball = true;
-                    hitVel = {x: (Math.random()-0.5)*35, y: -2 - Math.random() * 8, z: -15 - Math.random() * 20}; 
+                    hitVel = {x: (Math.random()-0.5)*35, y: -2 - Math.random() * 8, z: -15 - Math.random() * 20};
                 } else if (randHit < 0.8) { // 뜬공 35%
                     isFlyball = true;
-                    hitVel = {x: (Math.random()-0.5)*40, y: 15 + Math.random() * 20, z: -20 - Math.random() * 25}; 
+                    hitVel = {x: (Math.random()-0.5)*40, y: 15 + Math.random() * 20, z: -20 - Math.random() * 25};
                 } else if (randHit < 0.95) { // 직선타 15%
                     isLinedrive = true;
                     hitVel = {x: (Math.random()-0.5)*30, y: 3 + Math.random() * 7, z: -40 - Math.random() * 20};
@@ -982,7 +913,6 @@
                     isPopup = true;
                     hitVel = {x: (Math.random()-0.5)*15, y: 25 + Math.random() * 15, z: -5 - Math.random() * 10};
                 }
-
                 if (isGroundball) { // 땅볼
                     if (bases[0] && outs < 2) { // 1루 주자 있고 2아웃 미만
                         let dpChance = Math.random();
@@ -1014,23 +944,19 @@
                     resultType = 'popup'; resultName = "내야 뜬공 (아웃)"; resultColor = "#ED5565";
                 }
             }
-            
             if(absDiff <= 15 && !['out', 'groundout', 'flyout', 'lineout', 'popup', 'doubleplay', 'line_drive_dp', 'foul'].includes(resultType)) {
                 timingText = `<br><span style="font-size:22px; color:#FFCE54">🔥 PERFECT! ${diffMs} ms 🔥</span>`;
             }
-            
-            popup.innerHTML = `<span style="color:${resultColor}">${resultName}</span>` + timingText; 
-            popup.className = "show-swing"; 
-            processPitchResult(resultType); 
+            popup.innerHTML = `<span style="color:${resultColor}">${resultName}</span>` + timingText;
+            popup.className = "show-swing";
+            processPitchResult(resultType);
             setTimeout(() => { popup.className = ''; if (ballState === 'hit') setTimeout(resetToIdle, 200); }, 2000);
         };
-        
         window.addEventListener('keydown', (e) => {
             if (e.repeat || gameState !== 'playing' || e.target.tagName === 'INPUT') return;
             if (e.code === 'Space') { e.preventDefault(); window.swingBat(); }
             else if (e.key && e.key.toLowerCase() === 'f') { e.preventDefault(); window.startPitching(); }
         });
-        
         let lastRenderTime = 0;
         function animate(currentTime) {
             requestAnimationFrame(animate); const dt = lastRenderTime ? (currentTime - lastRenderTime) / 1000 : 0.016; lastRenderTime = currentTime; const safeDt = Math.min(dt, 0.05);
