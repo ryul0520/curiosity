@@ -276,9 +276,17 @@
             <p id="overlay-welcome" style="font-size: 20px; margin-bottom: 5px;">환영합니다, <strong id="welcome-nick" style="color:#FFCE54;">타자</strong>님!</p>
             <p id="overlay-desc" style="font-size: 16px; margin-bottom: 20px; color: #ccc;">자동으로 투수 데이터를 서버에서 불러옵니다.</p>
             <div style="display:flex; gap:15px; justify-content:center; flex-wrap: wrap;">
-                <button id="btn-practice-mode" class="top-btn" style="position:static; border-color:#48CFAD; background: rgba(0,0,0,0.5); padding: 12px 30px; font-size: 18px; margin-bottom: 20px; transition: 0.3s; width: auto;">🏏 타격 연습장 </button>
-                <button id="btn-show-tutorial" class="top-btn" style="position:static; border-color:#FFCE54; background: rgba(0,0,0,0.5); padding: 12px 30px; font-size: 18px; margin-bottom: 20px; width: auto;">📖 게임 규칙 보기</button>
-            </div>
+        <!-- 🔥 여기에 드롭다운 메뉴를 추가합니다 -->
+            <select id="practice-pitcher-select" class="top-btn" style="position:static; border-color:#fff; background: rgba(0,0,0,0.5); padding: 12px; font-size: 18px; margin-bottom: 20px; width: auto; color: white;">
+            <option value="오타니">오타니</option>
+            <option value="류현진">류현진</option>
+            <option value="다르빗슈">다르빗슈</option>
+            <option value="스쿠발">스쿠발</option>
+        </select>
+    
+        <button id="btn-practice-mode" class="top-btn" style="position:static; border-color:#48CFAD; background: rgba(0,0,0,0.5); padding: 12px 30px; font-size: 18px; margin-bottom: 20px; transition: 0.3s; width: auto;">🏏 타격 연습장 </button>
+        <button id="btn-show-tutorial" class="top-btn" style="position:static; border-color:#FFCE54; background: rgba(0,0,0,0.5); padding: 12px 30px; font-size: 18px; margin-bottom: 20px; width: auto;">📖 게임 규칙 보기</button>
+    </div>
             
             <!-- 게임 종료 결과창 -->
             <div id="game-result-container" class="result-container hidden">
