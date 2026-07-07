@@ -450,14 +450,13 @@
             } catch (error) { alert('오류 발생: ' + error.message); }
         });
         /* 인게임 포기 (재시작) 버튼 */
+               /* 인게임 포기 (재시작) 버튼 */
         document.getElementById('giveup-btn').addEventListener('click', () => {
             if (gameState === 'playing' && !isPracticeMode) {
-                const isPenalty = (strikes < 3 && outs < 3);
-                const msg = isPenalty ?
-                    "정말로 게임을 포기하시겠습니까?\n타석 진행 중에 포기하면 다음 게임 시작 시 [2 스트라이크] 페널티를 받습니다." :
-                    "게임을 포기하고 메인 화면으로 돌아가시겠습니까?";
+                const msg = "게임을 포기하고 메인으로 돌아가시겠습니까?\n(지금까지 친 타석 데이터는 보존되지만, 이번 판의 '점수'는 통산 기록에 합산되지 않습니다.)";
                 if (confirm(msg)) {
-                    if(isPenalty) localStorage.setItem('isAtBatActive', 'true');
+                    // 정당하게 포기 버튼을 누른 경우 도망(새로고침) 페널티를 면제함
+                    localStorage.removeItem('isAtBatActive');
                     location.reload();
                 }
             } else {
