@@ -191,7 +191,7 @@
             <h1 id="overlay-title">⚾ 4이닝 레전드 매치</h1>
             <p id="overlay-desc" style="font-size: 18px; margin-bottom: 20px;">환영합니다!</p>
             
-            <!-- 맛있는 결과창 UI (초기엔 숨김 처리) -->
+            <!-- 게임 종료 결과창 UI (초기엔 숨김 처리) -->
             <div id="game-result-container" class="result-container hidden">
                 <div class="stats-panel">
                     <div class="panel-title">내 기록 (이번 게임 / 통산)</div>
@@ -372,7 +372,6 @@
                 
                 await updateDoc(doc(db, "users", currentUserId), { nickname: newNick });
                 
-                // 정보 갱신 및 UI 즉시 반영
                 currentUserNickname = newNick;
                 alert('닉네임이 변경되었습니다.');
                 profileOverlay.classList.add('hidden');
@@ -383,7 +382,6 @@
                 const overlayDescEl = document.getElementById('overlay-desc');
                 if (overlayDescEl) overlayDescEl.innerHTML = `환영합니다, <strong style="color:#FFCE54;">${currentUserNickname}</strong>님!<br>자동으로 투수 데이터를 서버에서 불러옵니다.`;
                 
-                // 랭킹 캐시 초기화 및 다시 불러오기 (랭킹 테이블에 반영되도록)
                 cachedRankHTML = "";
                 fetchAndShowRankings();
                 
@@ -398,23 +396,15 @@
             try {
                 const user = auth.currentUser;
                 if (!user) return alert('로그인 정보를 찾을 수 없습니다.');
-                
-                // 1) Firestore에서 해당 유저의 문서(데이터) 삭제
                 await deleteDoc(doc(db, "users", user.uid));
-                
-                // 2) Firebase Auth에서 계정 영구 삭제
                 await deleteUser(user);
-                
                 alert("회원 탈퇴가 완료되었습니다. 이용해 주셔서 감사합니다.");
-                location.reload(); // 페이지 새로고침하여 상태 초기화
+                location.reload(); 
             } catch (error) {
-                // Firebase 특성상 로그인한 지 오래된 상태에서 탈퇴 시도 시 오류가 발생할 수 있음
                 if (error.code === 'auth/requires-recent-login') {
                     alert("보안을 위해 기기에서 로그아웃 처리됩니다. 다시 로그인하신 후 탈퇴를 진행해주세요.");
                     signOut(auth).then(() => location.reload());
-                } else {
-                    alert("탈퇴 처리 중 오류가 발생했습니다: " + error.message);
-                }
+                } else { alert("탈퇴 처리 중 오류가 발생했습니다: " + error.message); }
             }
         });
 
@@ -454,7 +444,6 @@
         async function fetchAndShowRankings() {
             const now = Date.now();
             const tbody = document.getElementById('ranking-tbody');
-            // 5분(300000ms) 이내면 캐시 사용
             if (now - lastRankFetchTime < 300000 && cachedRankHTML !== "") {
                 tbody.innerHTML = cachedRankHTML;
                 return;
@@ -462,22 +451,14 @@
             try {
                 const q = query(collection(db, "users"), orderBy("highScore", "desc"), limit(10));
                 const qs = await getDocs(q);
-                let html = "";
-                let rank = 1;
+                let html = ""; let rank = 1;
                 qs.forEach(doc => {
                     const d = doc.data();
                     let rClass = rank <= 3 ? `rank-${rank}` : '';
-                    html += `<tr>
-                                <td class="${rClass}">${rank}</td>
-                                <td>${d.nickname}</td>
-                                <td style="color:#4FC1E9; font-weight:bold;">${d.highScore || 0}</td>
-                                <td>${d.totalHomeruns || 0}</td>
-                             </tr>`;
+                    html += `<tr><td class="${rClass}">${rank}</td><td>${d.nickname}</td><td style="color:#4FC1E9; font-weight:bold;">${d.highScore || 0}</td><td>${d.totalHomeruns || 0}</td></tr>`;
                     rank++;
                 });
-                cachedRankHTML = html;
-                lastRankFetchTime = now;
-                tbody.innerHTML = cachedRankHTML;
+                cachedRankHTML = html; lastRankFetchTime = now; tbody.innerHTML = cachedRankHTML;
             } catch (e) {
                 console.error(e);
                 if(cachedRankHTML) tbody.innerHTML = cachedRankHTML;
@@ -521,6 +502,10 @@
             return parsedData;
         }
 
+        /* 
+           ✅ URL 호환성 강화 (한글 파일명 문제 해결)
+           - 기본 fetch 시도 후 실패 시 encodeURIComponent를 사용하여 대체 호출
+        */
         window.loadAllPitcherData = async function() {
             let allReady = true;
             for (let p of PITCHER_NAMES) {
@@ -528,9 +513,13 @@
                 el.innerText = `⏳ ${p} 데이터 불러오는 중...`; el.className = "status-off";
                 try {
                     let csvRes = await fetch(`./${p}.csv`);
+                    if (!csvRes.ok) csvRes = await fetch(`./${encodeURIComponent(p)}.csv`);
                     if (csvRes.ok) { let csvText = await csvRes.text(); pitcherRoster[p].csv = parseCSVDataString(csvText); }
+                    
                     let jsonRes = await fetch(`./${p}.json`);
+                    if (!jsonRes.ok) jsonRes = await fetch(`./${encodeURIComponent(p)}.json`);
                     if (jsonRes.ok) { let jsonText = await jsonRes.text(); pitcherRoster[p].json = JSON.parse(jsonText); }
+                    
                     if (pitcherRoster[p].csv.length > 0) {
                         el.className = "status-on"; el.innerText = `✅ ${p} (로드됨)`;
                     } else { el.className = "status-off"; el.innerText = `❌ ${p} (CSV 누락)`; allReady = false; }
@@ -622,7 +611,6 @@
             setTimeout(() => { showCallPopup("투수 등판!", "#4FC1E9", `${currentPitcherName}`); setTimeout(() => { document.getElementById('btn-pitch-main').disabled = false; }, 2000); }, 500);
         }
 
-        // DB에 이닝별 투구 정보 저장
         async function saveInningData(inningNum, pitches) {
             if(!currentUserId || pitches.length === 0) return;
             try {
@@ -631,7 +619,6 @@
             } catch (e) { console.error("피치 데이터 저장 실패", e); }
         }
 
-        // DB에 통산 스탯 업데이트 및 게임오버 처리
         async function saveGameStatsAndGameOver() {
             lifetimeStats.totalHits += currentGameStats.hits;
             lifetimeStats.totalDoubles += currentGameStats.doubles;
