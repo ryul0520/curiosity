@@ -724,31 +724,35 @@
             let giveRBI = true;
 
             if (hitType === 'walk') {
-                if (bases[0] && bases[1] && bases[2]) runsScored = 1; else if (bases[0] && bases[1]) bases[2] = true; else if (bases[0]) bases[1] = true; bases[0] = true;
-            }
-            else if (hitType === 'single') {
-                if (bases[2]) runsScored++;
-                // 2루 주자: 80% 확률로 득점, 20% 확률로 3루 멈춤
-                if (bases[1]) {
-                    if (Math.random() < 0.8) { runsScored++; bases[2] = false; }
-                    else { bases[2] = true; }
-                } else { bases[2] = false; }
-                // 1루 주자: 70% 확률로 2루, 30% 확률로 3루 진루
-                if (bases[0]) {
-                    if (Math.random() < 0.3) { bases[2] = true; bases[1] = false; }
-                    else { bases[1] = true; }
-                } else { bases[1] = false; }
+                if (bases[0] && bases[1] && bases[2]) runsScored = 1; 
+                else if (bases[0] && bases[1]) bases[2] = true; 
+                else if (bases[0]) bases[1] = true; 
                 bases[0] = true;
             }
+            else if (hitType === 'single') {
+                let nextBases = [false, false, false];
+                if (bases[2]) runsScored++;
+                if (bases[1]) {
+                    if (Math.random() < 0.8) runsScored++; 
+                    else nextBases[2] = true;
+                }
+                if (bases[0]) {
+                    if (!nextBases[2] && Math.random() < 0.3) nextBases[2] = true; 
+                    else nextBases[1] = true;
+                }
+                nextBases[0] = true;
+                bases = nextBases;
+            }
             else if (hitType === 'double') {
+                let nextBases = [false, false, false];
                 if (bases[2]) runsScored++;
                 if (bases[1]) runsScored++;
-                // 1루 주자: 40% 확률로 홈인, 60% 확률로 3루 멈춤
                 if (bases[0]) {
-                    if (Math.random() < 0.4) { runsScored++; bases[2] = false; }
-                    else { bases[2] = true; }
-                } else { bases[2] = false; }
-                bases[1] = true; bases[0] = false;
+                    if (Math.random() < 0.4) runsScored++; 
+                    else nextBases[2] = true;
+                }
+                nextBases[1] = true;
+                bases = nextBases;
             }
             else if (hitType === 'triple') {
                 if (bases[2]) runsScored++; if (bases[1]) runsScored++; if (bases[0]) runsScored++;
@@ -760,43 +764,48 @@
             }
             else if (hitType === 'doubleplay') {
                 bases[0] = false; // 1루 주자 아웃
-                if (outs === 0) { // 무사에서 친 병살타 (2아웃이 되며 주자 진루 허용)
-                    if (bases[2]) { runsScored++; bases[2] = false; giveRBI = false; } // 병살 시 득점은 타점 인정 안됨
+                if (outs === 0) { // 무사에서 친 병살타
+                    if (bases[2]) { runsScored++; bases[2] = false; giveRBI = false; } 
                     if (bases[1]) { bases[2] = true; bases[1] = false; }
-                } else { // 1사에서 친 병살타면 쓰리아웃 이닝종료 (득점 무효)
+                } else { // 1사에서 친 병살타면 쓰리아웃
                     bases = [false, false, false];
                 }
             }
             else if (hitType === 'line_drive_dp') {
-                bases[0] = false; // 1루 귀루 실패 아웃
-                if (outs >= 3) bases = [false, false, false];
+                bases[0] = false;
+                if (outs >= 1) bases = [false, false, false];
             }
             else if (hitType === 'sac_fly') {
-                if (bases[2] && outs < 3) { runsScored++; bases[2] = false; }
-                if (bases[1] && outs < 3 && Math.random() < 0.3) { bases[2] = true; bases[1] = false; } // 2루 주자 태그업 (30%)
+                if (bases[2]) { runsScored++; bases[2] = false; }
+                if (bases[1] && Math.random() < 0.3) { bases[2] = true; bases[1] = false; }
             }
             else if (hitType === 'groundout_advance') {
-                if (outs < 3) {
-                    if (bases[2] && !bases[0] && !bases[1]) { runsScored++; bases[2] = false; giveRBI = false; } // 3루 주자 홈
-                    if (bases[1] && !bases[0]) { bases[2] = true; bases[1] = false; } // 2루 주자 3루
-                }
+                // 타자는 아웃되지만 주자들은 1베이스씩 진루
+                let nextBases = [false, false, false];
+                if (bases[2]) { runsScored++; giveRBI = true; } // 땅볼로 인한 득점은 타점 인정
+                if (bases[1]) { nextBases[2] = true; }
+                bases = nextBases;
+            }
+            else if (hitType === 'groundout') {
+                // 일반 땅볼 (병살/야수선택 아님). 1루 주자가 있었다면 2루로 진루 (타자만 1루에서 아웃)
+                if (bases[0]) { bases[1] = true; bases[0] = false; }
             }
             else if (hitType === 'fielders_choice') {
-                // 야수선택: 선행주자 아웃, 타자는 1루 생존
-                bases[0] = true;
-                if (bases[2] && outs < 3) { runsScored++; bases[2] = false; giveRBI = false;}
-                if (bases[1]) { bases[2] = true; bases[1] = false; }
+                // 선행 주자(1루 주자) 2루에서 포스 아웃, 타자는 1루 생존
+                let nextBases = [true, false, false];
+                if (bases[2]) { runsScored++; giveRBI = true; } // 3루 주자 홈인 시 타점 인정
+                if (bases[1]) { nextBases[2] = true; } // 2루 주자 3루 진루
+                bases = nextBases;
             }
             else if (hitType === 'error') {
-                // 실책 출루: 모든 주자 1베이스씩 강제 진루
                 if (bases[2]) runsScored++;
                 bases[2] = bases[1];
                 bases[1] = bases[0];
                 bases[0] = true;
-                giveRBI = false; // 실책에 의한 득점은 타점 아님
+                giveRBI = false; // 실책 득점은 타점 아님
             }
 
-            if (runsScored > 0 && outs <= 3) {
+            if (runsScored > 0 && outs <= 2) {
                 score += runsScored;
                 if (giveRBI) currentGameStats.rbis += runsScored;
             }
@@ -986,7 +995,7 @@
                         if (dpChance < 0.5) { resultType = 'doubleplay'; resultName = "병살타!"; resultColor = "#E65100"; }
                         else if (dpChance < 0.7) { resultType = 'fielders_choice'; resultName = "야수선택"; resultColor = "#F6BB42"; }
                         else { resultType = 'groundout'; resultName = "땅볼 아웃"; resultColor = "#ED5565"; }
-                    } else if (outs < 2 && Math.random() < 0.6) { // 1루가 비었을 때 우측 진루타 등
+                    } else if (outs < 2 && (bases[1] || bases[2]) && Math.random() < 0.6) { // 1루가 비어있지만 2,3루 주자가 있을 때 진루타 등
                         resultType = 'groundout_advance'; resultName = "진루타 (땅볼)"; resultColor = "#F6BB42";
                     } else if (Math.random() < 0.03) { // 3% 확률로 내야 실책
                         resultType = 'error'; resultName = "수비 실책 (세이프!)"; resultColor = "#A0D468";
