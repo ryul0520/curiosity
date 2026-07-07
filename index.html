@@ -7,7 +7,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         body { margin: 0; overflow: hidden; background-color: #87CEEB; user-select: none; font-family: 'Malgun Gothic', sans-serif; }
-        
         /* ---------------- 로그인/회원가입 UI 스타일 ---------------- */
         #auth-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -33,13 +32,11 @@
         .auth-links a { color: #4FC1E9; font-weight: bold; text-decoration: none; cursor: pointer; }
         .auth-links a:hover { text-decoration: underline; }
         .hidden { display: none !important; }
-        
         #logout-btn {
             position: absolute; top: 20px; left: 20px; background: rgba(0,0,0,0.5);
             color: white; border: 1px solid white; padding: 8px 15px;
             border-radius: 20px; cursor: pointer; z-index: 200; font-weight: bold;
         }
-
         /* ---------------- 기존 게임 UI 스타일 ---------------- */
         #top-info {
             position: absolute; top: 20px; left: 50%; transform: translateX(-50%);
@@ -135,22 +132,20 @@
     </style>
 </head>
 <body>
-
     <!-- 1. 파이어베이스 인증 화면 (전화번호+비밀번호) -->
     <div id="auth-overlay">
-        
         <!-- 로그인 폼 -->
         <div id="login-box" class="auth-box">
             <h2>⚾ MLB 게임 로그인</h2>
-            <input type="tel" id="login-phone" placeholder="전화번호 (숫자만 입력)">
+            <input type="tel" id="login-phone" placeholder="전화번호 (예: 01012345678)">
             <input type="password" id="login-pwd" placeholder="비밀번호">
             <button id="login-btn">로그인</button>
             <div class="auth-links">
                 계정이 없으신가요? <a id="show-signup">회원가입 하기</a>
             </div>
         </div>
-
-                <!-- 회원가입 폼 -->
+        
+        <!-- 회원가입 폼 -->
         <div id="signup-box" class="auth-box hidden">
             <h2>회원가입</h2>
             <input type="tel" id="signup-phone" placeholder="전화번호 (예: 01012345678)">
@@ -163,19 +158,16 @@
                 이미 계정이 있으신가요? <a id="show-login">로그인 하기</a>
             </div>
         </div>
-        
     </div>
 
     <!-- 2. 게임 전체 컨테이너 -->
     <div id="game-container" class="hidden">
         <button id="logout-btn">로그아웃</button>
-
         <div id="game-overlay">
             <h1 id="overlay-title">⚾ 4이닝 레전드 매치</h1>
             <p id="overlay-desc">환영합니다!</p>
             <button id="btn-start-game" disabled onclick="window.startGame()">데이터 다운로드 중...</button>
         </div>
-        
         <div id="top-info">
             <button id="btn-minimize" onclick="window.toggleTopInfo()">[—]</button>
             <h3>⚾ 서버 데이터 연동</h3>
@@ -192,7 +184,6 @@
                 </div>
             </div>
         </div>
-        
         <div id="scoreboard">
             <div class="inning-box">
                 <span id="inning-display">1</span><span class="inning-total">/ 4 이닝</span>
@@ -213,7 +204,6 @@
                 <div class="circle-container" id="outs-ui"><div class="circle"></div><div class="circle"></div></div>
             </div>
         </div>
-        
         <div id="left-controls">
             <div id="dashboard">
                 <div class="matchup-text" id="pitcher-info">⚾ 투수: 대기 중</div>
@@ -225,24 +215,23 @@
                 🎲 투구 <span class="key-hint">F</span>
             </button>
         </div>
-        
         <div id="right-controls">
             <button class="btn-gamepad btn-swing" onclick="window.swingBat()" tabindex="-1">
                 🏏 스윙 타격 <span class="key-hint">SPACE</span>
             </button>
         </div>
-        
         <div id="call-popup">STRIKE</div>
         <div id="swing-popup">PERFECT!</div>
     </div>
 
-
-    <script type="module">
+        <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         // 이메일 기반 인증 함수들 가져오기
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
-
+        
+        // 🌟 수정된 부분: 닉네임 중복 검색을 위해 collection, query, where, getDocs를 추가로 가져옵니다.
+        import { getFirestore, doc, setDoc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        
         const firebaseConfig = {
             apiKey: "AIzaSyDq-LeNwUhHFTH641U3EfLwj0iMZ6gkHB4",
             authDomain: "mlb-legend-game.firebaseapp.com",
@@ -254,12 +243,10 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-
         const authOverlay = document.getElementById('auth-overlay');
         const loginBox = document.getElementById('login-box');
         const signupBox = document.getElementById('signup-box');
         const gameContainer = document.getElementById('game-container');
-        
         let currentUserNickname = "타자";
 
         // 화면 전환 이벤트
@@ -278,39 +265,33 @@
             return cleanPhone + "@baseballgame.local";
         }
 
-               // 1. 안전하게 강화된 회원가입 로직
+        // 1. 🌟 강화된 회원가입 로직 (닉네임 중복 방지 추가)
         document.getElementById('signup-btn').addEventListener('click', async () => {
             const phone = document.getElementById('signup-phone').value.trim();
             const pwd = document.getElementById('signup-pwd').value;
-            const pwdConfirm = document.getElementById('signup-pwd-confirm').value; // 추가된 확인용 비번
+            const pwdConfirm = document.getElementById('signup-pwd-confirm').value; 
             const nick = document.getElementById('signup-nickname').value.trim();
+            
+            // 기본 방어막
+            if (!/^010[0-9]{8}$/.test(phone)) { return alert('경고: 전화번호는 010으로 시작하는 11자리 숫자여야 합니다.'); }
+            if (pwd.length < 6) { return alert('경고: 비밀번호는 최소 6자리 이상이어야 합니다.'); }
+            if (pwd !== pwdConfirm) { return alert('경고: 비밀번호가 서로 일치하지 않습니다.'); }
+            if (nick === '') { return alert('경고: 닉네임을 입력해주세요.'); }
 
-            // 🛡️ 1단계: 전화번호 형식 검사 (010 시작, 총 11자리 숫자)
-            const phoneRegex = /^010[0-9]{8}$/;
-            if (!phoneRegex.test(phone)) {
-                return alert('경고: 전화번호는 010으로 시작하는 11자리 숫자여야 합니다. (- 제외)');
-            }
-
-            // 🛡️ 2단계: 비밀번호 6자리 이상 검사
-            if (pwd.length < 6) {
-                return alert('경고: 비밀번호는 최소 6자리 이상이어야 합니다.');
-            }
-
-            // 🛡️ 3단계: 비밀번호 두 번 입력 일치 검사
-            if (pwd !== pwdConfirm) {
-                return alert('경고: 비밀번호가 서로 일치하지 않습니다. 다시 확인해주세요!');
-            }
-
-            // 🛡️ 4단계: 닉네임 입력 검사
-            if (nick === '') {
-                return alert('경고: 닉네임을 입력해주세요.');
-            }
-
-            // 모든 방어막을 통과했다면 파이어베이스 가입 진행!
             try {
-                // 이메일(가짜)과 비밀번호로 회원가입
+                // 🛡️ 닉네임 중복 체크 로직 시작
+                const usersRef = collection(db, "users");
+                const q = query(usersRef, where("nickname", "==", nick));
+                const querySnapshot = await getDocs(q);
+
+                // 검색된 결과가 비어있지 않다면(누군가 쓰고 있다면)
+                if (!querySnapshot.empty) {
+                    return alert('경고: 이미 사용 중인 닉네임입니다. 다른 닉네임을 입력해주세요!');
+                }
+                // 🛡️ 닉네임 중복 체크 끝
+
+                // 중복이 없다면 정상적으로 가입 진행
                 const userCredential = await createUserWithEmailAndPassword(auth, getFakeEmail(phone), pwd);
-                // Firestore에 닉네임과 전화번호 저장
                 await setDoc(doc(db, "users", userCredential.user.uid), {
                     nickname: nick,
                     phone: phone
@@ -326,24 +307,48 @@
             }
         });
 
-        // 2. 로그인 로직
+        // 2. 안전하게 강화된 로그인 로직 (이하 동일하게 유지)
         document.getElementById('login-btn').addEventListener('click', async () => {
-            const phone = document.getElementById('login-phone').value;
+            const phone = document.getElementById('login-phone').value.trim();
             const pwd = document.getElementById('login-pwd').value;
 
-            if (!phone || !pwd) return alert('전화번호와 비밀번호를 모두 입력해주세요.');
+            if (!phone || !pwd) {
+                return alert('전화번호와 비밀번호를 모두 입력해주세요.');
+            }
+
+            if (!/^010[0-9]{8}$/.test(phone)) {
+                return alert('형식 오류: 가입하신 010 번호 11자리를 정확히 입력해주세요.');
+            }
 
             try {
                 await signInWithEmailAndPassword(auth, getFakeEmail(phone), pwd);
-                // 로그인이 성공하면 onAuthStateChanged가 자동으로 실행되어 닉네임을 가져옵니다.
             } catch (error) {
-                alert('전화번호나 비밀번호가 올바르지 않습니다.');
+                alert('전화번호나 비밀번호가 올바르지 않거나 등록되지 않은 사용자입니다.');
+            }
+        });
+        // 2. 안전하게 강화된 로그인 로직
+        document.getElementById('login-btn').addEventListener('click', async () => {
+            const phone = document.getElementById('login-phone').value.trim();
+            const pwd = document.getElementById('login-pwd').value;
+
+            if (!phone || !pwd) {
+                return alert('전화번호와 비밀번호를 모두 입력해주세요.');
+            }
+
+            if (!/^010[0-9]{8}$/.test(phone)) {
+                return alert('형식 오류: 가입하신 010 번호 11자리를 정확히 입력해주세요. (- 제외)');
+            }
+
+            try {
+                await signInWithEmailAndPassword(auth, getFakeEmail(phone), pwd);
+            } catch (error) {
+                alert('전화번호나 비밀번호가 올바르지 않거나 등록되지 않은 사용자입니다.');
             }
         });
 
         // 로그아웃
-        document.getElementById('logout-btn').addEventListener('click', () => { 
-            signOut(auth).then(() => location.reload()); 
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            signOut(auth).then(() => location.reload());
         });
 
         // 유저 정보 가져와서 화면 전환
@@ -358,34 +363,30 @@
         function startGameUI() {
             authOverlay.classList.add('hidden');
             gameContainer.classList.remove('hidden');
-            document.getElementById('overlay-desc').innerHTML = 
+            document.getElementById('overlay-desc').innerHTML =
                 `환영합니다, <strong style="color:#FFCE54;">${currentUserNickname}</strong>님!<br>자동으로 투수 데이터를 서버에서 불러옵니다.`;
-            
-            // 데이터 자동 로딩
             window.loadAllPitcherData();
         }
 
         // 앱 실행 시 로그인 상태 확인
         onAuthStateChanged(auth, (user) => {
-            if (user) { 
-                fetchUserDataAndEnter(user.uid); 
-            } else { 
-                authOverlay.classList.remove('hidden'); 
+            if (user) {
+                fetchUserDataAndEnter(user.uid);
+            } else {
+                authOverlay.classList.remove('hidden');
                 loginBox.classList.remove('hidden');
                 signupBox.classList.add('hidden');
             }
         });
 
         /* ========================================================= */
-        /* 게임 로직 & 파일 자동 로드 (Fetch API 연동)                */
+        /* 복구 완료된 게임 로직 & 파일 자동 로드 (Fetch API 연동)                */
         /* ========================================================= */
-
         const ballRadius = 0.0368;
         let movementWeight = 1.5;
         let windupDuration = 1.0;
         let followThroughDuration = 0.26;
         window.toggleTopInfo = function() { document.getElementById('top-info').classList.toggle('minimized'); }
-        
         const PITCHER_NAMES = ["다르빗슈", "류현진", "오타니", "스쿠발"];
         let pitcherRoster = {
             "다르빗슈": { csv: [], json: null, hand: 'R', weight: 1.5, windup: 1200, followThrough: 450 },
@@ -394,7 +395,7 @@
             "스쿠발": { csv: [], json: null, hand: 'L', weight: 1.6, windup: 900, followThrough: 180 }
         };
         let inningRotation = []; let currentPitcherName = ""; let dataset = []; let pitcherMotionData = null;
-
+        
         function parseCSVDataString(csvText) {
             let parsedData = [];
             const lines = csvText.trim().split('\n'); const delimiter = lines[0].includes('\t') ? '\t' : ',';
@@ -473,7 +474,7 @@
             let p = battingProbabilities[key];
             if (p.foul >= 7.0) { p.foul -= 7.0; p.single += 3.0; p.double += 2.0; p.triple += 1.0; p.homerun += 1.0; }
         });
-        
+
         function calculateSwingResultProbs(zoneProbs, absDiff, isBall, x, y) {
             if (absDiff >= 100) return { whiff: 100.0, foul: 0, single: 0, double: 0, triple: 0, homerun: 0, out: 0 };
             const baseWhiff = zoneProbs.whiff; let finalWhiff = 0;
@@ -497,25 +498,25 @@
                 let boost = 2.0 - (absDiff / 10.0) * 0.5;
                 let extraSingle = finalProbs.single * (boost - 1.0); let extraDouble = finalProbs.double * (boost - 1.0); let extraTriple = finalProbs.triple * (boost - 1.0); let extraHomerun = finalProbs.homerun * (boost - 1.0);
                 let totalExtra = extraSingle + extraDouble + extraTriple + extraHomerun;
-                if (finalProbs.out >= totalExtra) { finalProbs.out -= totalExtra; finalProbs.single += extraSingle; finalProbs.double += extraDouble; finalProbs.triple += extraTriple; finalProbs.homerun += extraHomerun; } 
+                if (finalProbs.out >= totalExtra) { finalProbs.out -= totalExtra; finalProbs.single += extraSingle; finalProbs.double += extraDouble; finalProbs.triple += extraTriple; finalProbs.homerun += extraHomerun; }
                 else { let remainingExtra = totalExtra - finalProbs.out; finalProbs.out = 0; if (finalProbs.foul >= remainingExtra) { finalProbs.foul -= remainingExtra; finalProbs.single += extraSingle; finalProbs.double += extraDouble; finalProbs.triple += extraTriple; finalProbs.homerun += extraHomerun; } }
             }
             return finalProbs;
         }
-        
+
         function pickResultFromProbs(probs) {
             let rand = Math.random() * 100; let cumulative = 0;
             for (const [outcome, prob] of Object.entries(probs)) { cumulative += prob; if (rand <= cumulative) return outcome; }
             return 'out';
         }
-        
+
         window.startGame = function() {
             gameState = 'playing'; document.getElementById('game-overlay').classList.add('hidden');
             inningRotation = [...PITCHER_NAMES].sort(() => Math.random() - 0.5);
             currentInning = 1; strikes = 0; balls = 0; outs = 0; score = 0; bases = [false, false, false];
             setRandomBatter(); applyPitcherForInning(currentInning);
         };
-        
+
         function applyPitcherForInning(inning) {
             currentPitcherName = inningRotation[inning - 1]; let pData = pitcherRoster[currentPitcherName];
             dataset = pData.csv; pitcherMotionData = pData.json;
@@ -524,13 +525,13 @@
             updatePitcherTransform(); updateScoreboardUI(); resetToIdle();
             setTimeout(() => { showCallPopup("투수 등판!", "#4FC1E9", `${currentPitcherName}`); setTimeout(() => { document.getElementById('btn-pitch-main').disabled = false; }, 2000); }, 500);
         }
-        
+
         function gameOver() {
             gameState = 'gameover'; document.getElementById('btn-pitch-main').disabled = true; document.getElementById('game-overlay').classList.remove('hidden');
             document.getElementById('overlay-title').innerText = "게임 종료!"; document.getElementById('overlay-title').style.color = "#ED5565";
             document.getElementById('overlay-desc').innerText = `최종 점수: ${score} 점\n(${currentUserNickname}님의 기록)`; document.getElementById('btn-start-game').innerText = "새로운 게임 (리매치)"; document.getElementById('btn-start-game').disabled = false;
         }
-        
+
         function updateScoreboardUI() {
             document.getElementById('inning-display').innerText = currentInning > maxInning ? maxInning : currentInning;
             document.getElementById('run-score').innerText = score;
@@ -541,13 +542,13 @@
             document.querySelectorAll('#strikes-ui .circle').forEach((c, i) => c.className = 'circle' + (i < strikes ? ' s-on' : ''));
             document.querySelectorAll('#outs-ui .circle').forEach((c, i) => c.className = 'circle' + (i < outs ? ' o-on' : ''));
         }
-        
+
         function advanceBases(hitType) {
             let runsScored = 0;
             if (hitType === 'walk') {
                 if (bases[0] && bases[1] && bases[2]) runsScored = 1; else if (bases[0] && bases[1]) bases[2] = true; else if (bases[0]) bases[1] = true; bases[0] = true;
             } else if (hitType === 'single') {
-                if (bases[2]) runsScored++; 
+                if (bases[2]) runsScored++;
                 if (bases[1]) { if (Math.random() < 0.4) { runsScored++; bases[2] = false; } else { bases[2] = true; } } else { bases[2] = false; }
                 bases[1] = bases[0]; bases[0] = true;     
             } else if (hitType === 'double') {
@@ -561,7 +562,7 @@
             }
             score += runsScored;
         }
-        
+
         function processPitchResult(type) {
             if (gameState !== 'playing') return; let atBatOver = false;
             if (type === 'strike' || type === 'whiff') { strikes++; if (strikes >= 3) { outs++; resetCount(); atBatOver = true; showCallPopup("삼진 아웃!", "#ED5565"); } }
@@ -570,24 +571,23 @@
             else if (type === 'out') { outs++; resetCount(); atBatOver = true; }
             else if (type === 'doubleplay') { outs += 2; bases[0] = false; resetCount(); atBatOver = true; }
             else { advanceBases(type); resetCount(); atBatOver = true; }
-            
             updateScoreboardUI();
             if (outs >= 3) {
                 outs = 0; resetCount(); bases = [false, false, false]; currentInning++; atBatOver = true;
-                if (currentInning > maxInning) { setTimeout(gameOver, 2500); } 
+                if (currentInning > maxInning) { setTimeout(gameOver, 2500); }
                 else { document.getElementById('btn-pitch-main').disabled = true; showCallPopup(`${currentInning-1}이닝 종료`, "#ccc", "공수교대"); updateScoreboardUI(); setTimeout(() => { applyPitcherForInning(currentInning); }, 2500); }
             }
             if (atBatOver && currentInning <= maxInning && gameState !== 'gameover') { setTimeout(setRandomBatter, 2000); }
         }
-        
+
         function resetCount() { strikes = 0; balls = 0; }
-        
+
         function showCallPopup(text, color, subText="") {
             callPopupActive = true; const popup = document.getElementById('call-popup');
             popup.innerHTML = `<span style="color:${color}">${text}</span>${subText ?` <br><span class="loc-text">${subText}</span>` : ''}`; popup.className = "show-call";
             setTimeout(() => { popup.className = ''; setTimeout(resetToIdle, 200); }, 2000);
         }
-        
+
         const scene = new THREE.Scene(); scene.background = new THREE.Color(0x7FB3D5);
         const camera = new THREE.PerspectiveCamera(38, window.innerWidth / window.innerHeight, 0.1, 1000); camera.position.set(0, 1.3, 1.5); camera.lookAt(0, 0.75, -18.4);
         const renderer = new THREE.WebGLRenderer({ antialias: true }); renderer.setSize(window.innerWidth, window.innerHeight); document.body.appendChild(renderer.domElement);
@@ -613,11 +613,9 @@
             ctx.strokeStyle = '#D32F2F'; ctx.lineWidth = 22; ctx.setLineDash([18, 14]); ctx.beginPath(); ctx.arc(-100, 256, 320, -Math.PI/2.2, Math.PI/2.2); ctx.stroke(); ctx.beginPath(); ctx.arc(612, 256, 320, Math.PI - Math.PI/2.2, Math.PI + Math.PI/2.2); ctx.stroke();
             return new THREE.CanvasTexture(cvs);
         }
-        
         const ball = new THREE.Mesh(new THREE.SphereGeometry(ballRadius, 32, 32), new THREE.MeshStandardMaterial({ map: createBaseballTexture() })); ball.renderOrder = 20; scene.add(ball); ball.visible = false;
         const borderMarker = new THREE.Mesh(new THREE.CircleGeometry(ballRadius * 1.2, 32), new THREE.MeshBasicMaterial({ color: 0xFFFF00, transparent: true, opacity: 0.9, side: THREE.DoubleSide, depthTest: false }));
         borderMarker.renderOrder = 999; scene.add(borderMarker); borderMarker.visible = false;
-        
         const pitcherCanvas = document.createElement('canvas'); pitcherCanvas.width = 512; pitcherCanvas.height = 512; const pCtx = pitcherCanvas.getContext('2d'); const pitcherTexture = new THREE.CanvasTexture(pitcherCanvas);
         const pitcherSprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: pitcherTexture, color: 0xffffff, transparent: true, depthTest: false })); pitcherSprite.renderOrder = 10; scene.add(pitcherSprite);
         
@@ -634,7 +632,7 @@
             else if (state === 5) { pCtx.beginPath(); pCtx.moveTo(256, 170); pCtx.lineTo(256, 290); pCtx.stroke(); pCtx.beginPath(); pCtx.moveTo(240, 280); pCtx.lineTo(180, 330); pCtx.stroke(); pCtx.beginPath(); pCtx.moveTo(270, 280); pCtx.lineTo(330, 460); pCtx.stroke(); pCtx.beginPath(); pCtx.moveTo(230, 180); pCtx.lineTo(320, 360); pCtx.stroke(); pCtx.beginPath(); pCtx.moveTo(280, 180); pCtx.lineTo(300, 230); pCtx.stroke(); }
             pCtx.restore(); pitcherTexture.needsUpdate = true;
         }
-        
+
         function drawJSONPitcherState(frameIdx) {
             if (!pitcherMotionData || frameIdx >= pitcherMotionData.length) return; const lm = pitcherMotionData[frameIdx].landmarks; if (!lm || lm.length < 33) return;
             pCtx.clearRect(0, 0, 512, 512); pCtx.save(); pCtx.translate(25, 40); pCtx.scale(0.9, 0.9);
@@ -670,7 +668,9 @@
         drawBatterState(0);
         
         let currentPitch = null, t = 0, targetT = 0; let ballState = 'idle'; let callMade = false, hasSwung = false, zoneCrossed = false; let crossX = 0, crossY = 0; let hitVel = { x: 0, y: 0, z: 0 };
+        
         function getPosition(p, time) { return { x: p.x0 + p.vx0 * time + 0.5 * p.ax * time * time, y: p.y0 + p.vy0 * time + 0.5 * p.ay * time * time, z: p.z0 + p.vz0 * time + 0.5 * p.az * time * time }; }
+        
         function getZoneNumber(x, y) {
             const buffer = ballRadius * 1.1; if (x < absZone.left - buffer || x > absZone.right + buffer || y < absZone.bottom - buffer || y > absZone.top + buffer) { return "Ball"; }
             const w = absZone.right - absZone.left; const h = absZone.top - absZone.bottom; const colW = w / 3; const rowH = h / 3;
@@ -704,6 +704,7 @@
         }
         
         function throwPitch() { ball.position.set(currentPitch.x0, currentPitch.y0, currentPitch.z0); ball.visible = true; document.getElementById('speed-display').innerText = currentPitch.speedKm + " km/h"; document.getElementById('speed-display').style.color = "#FFCE54"; document.getElementById('pitch-name').innerText = currentPitch.name; t = 0; ballState = 'pitching'; }
+        
         function resetToIdle() { ballState = 'idle'; ball.visible = false; borderMarker.visible = false; if(!pitcherMotionData) drawPitcherState(0); else drawJSONPitcherState(0); drawBatterState(0); callPopupActive = false; isPitchingActive = false; if (gameState === 'playing') document.getElementById('btn-pitch-main').disabled = false; }
         
         window.swingBat = function() {
@@ -733,8 +734,8 @@
             requestAnimationFrame(animate); const dt = lastRenderTime ? (currentTime - lastRenderTime) / 1000 : 0.016; lastRenderTime = currentTime; const safeDt = Math.min(dt, 0.05);
             if (isPitchingActive && ballState !== 'hit') {
                 let elapsed = (currentTime - pitchStartTime) / 1000; let waitTime = 0.5; let releaseTime = waitTime + windupDuration;
-                if (elapsed < waitTime) { if (pitcherMotionData) drawJSONPitcherState(0); else drawPitcherState(0); } 
-                else if (elapsed < releaseTime) { let windupRatio = (elapsed - waitTime) / windupDuration; if (pitcherMotionData) { let frameToRender = Math.floor(windupRatio * releaseFrameIndex); drawJSONPitcherState(frameToRender); } else { if (windupRatio < 0.3) drawPitcherState(1); else if (windupRatio < 0.6) drawPitcherState(2); else drawPitcherState(3); } } 
+                if (elapsed < waitTime) { if (pitcherMotionData) drawJSONPitcherState(0); else drawPitcherState(0); }
+                else if (elapsed < releaseTime) { let windupRatio = (elapsed - waitTime) / windupDuration; if (pitcherMotionData) { let frameToRender = Math.floor(windupRatio * releaseFrameIndex); drawJSONPitcherState(frameToRender); } else { if (windupRatio < 0.3) drawPitcherState(1); else if (windupRatio < 0.6) drawPitcherState(2); else drawPitcherState(3); } }
                 else { if (!pitchThrownThisPlay) { throwPitch(); pitchThrownThisPlay = true; } let ftElapsed = elapsed - releaseTime; let ftDuration = followThroughDuration; let ftRatio = Math.min(ftElapsed / (ftDuration || 0.1), 1.0); if (pitcherMotionData) { let remainingFrames = pitcherMotionData.length - 1 - releaseFrameIndex; let frameToRender = releaseFrameIndex + Math.floor(ftRatio * remainingFrames); drawJSONPitcherState(frameToRender); } else { if (ftRatio < 0.2) drawPitcherState(4); else drawPitcherState(5); } }
             }
             if (ballState === 'pitching' && currentPitch) {
