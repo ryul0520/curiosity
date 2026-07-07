@@ -575,7 +575,7 @@
             }
         }
         
-        /* 연습 모드 (튜토리얼) 로직 */
+                /* 연습 모드 (튜토리얼) 로직 */
         document.getElementById('btn-practice-mode').addEventListener('click', () => {
             isPracticeMode = true;
             gameState = 'playing';
@@ -587,7 +587,9 @@
             document.getElementById('fullscreen-btn').classList.add('hidden'); // 추가: 연습모드시 숨김
             document.getElementById('exit-practice-btn').classList.remove('hidden');
             document.getElementById('scoreboard').classList.add('hidden');
-            currentPitcherName = PITCHER_NAMES[0];
+            
+            // 드롭다운에서 유저가 선택한 투수를 가져옴
+            currentPitcherName = document.getElementById('practice-pitcher-select').value; 
             let pData = pitcherRoster[currentPitcherName];
             dataset = pData.csv; pitcherMotionData = pData.json;
             document.getElementById('pitcher-info').innerText = `⚾ 연습 투수: ${currentPitcherName}`;
