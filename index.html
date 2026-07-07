@@ -609,7 +609,6 @@
             return false;
         }
         /* 🔥 본 게임 시작하기 (튜토리얼 검사 추가) */
-        document.getElementById('btn-start-game').addEventListener('click', window.startGame);
         window.startGame = function() {
             if (!tutorialCompleted) {
                 alert("⚠️ 본 게임을 시작하려면 먼저 [타격 연습장]에서 1구 이상 타격 연습을 해야 합니다!");
@@ -640,6 +639,7 @@
             localStorage.setItem('isAtBatActive', 'true');
             setRandomBatter(); applyPitcherForInning(currentInning);
         };
+        document.getElementById('btn-start-game').addEventListener('click', window.startGame);
         /* ========================================================= */
         /* 게임 기본 로직 (Three.js 및 야구 시뮬레이션)              */
         /* ========================================================= */
