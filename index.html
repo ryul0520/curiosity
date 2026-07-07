@@ -268,6 +268,14 @@
             <button class="top-btn" id="records-btn" style="border-color:#A0D468;">🏆 랭킹/기록</button>
             <button class="top-btn" id="giveup-btn" style="border-color:#ED5565;">🏳️ 게임 포기(재시작)</button>
             <button class="top-btn" id="logout-btn" style="border-color:#888;">로그아웃</button>
+            
+            <!-- 🔥 타격 연습장에서만 보이는 투수 선택 드롭다운 -->
+            <select id="practice-pitcher-select" class="top-btn hidden" style="border-color:#4FC1E9; background: rgba(15, 20, 25, 0.95); color: #4FC1E9;">
+                <option value="오타니">⚾ 오타니 쇼헤이</option>
+                <option value="류현진">⚾ 류현진</option>
+                <option value="다르빗슈">⚾ 다르빗슈 유</option>
+                <option value="스쿠발">⚾ 타릭 스쿠발</option>
+            </select>
             <button class="top-btn hidden" id="exit-practice-btn" style="border-color:#ED5565; background: #da4453; color: white;">🚪 연습 종료하고 본 게임 가기</button>
         </div>
         
@@ -276,17 +284,9 @@
             <p id="overlay-welcome" style="font-size: 20px; margin-bottom: 5px;">환영합니다, <strong id="welcome-nick" style="color:#FFCE54;">타자</strong>님!</p>
             <p id="overlay-desc" style="font-size: 16px; margin-bottom: 20px; color: #ccc;">자동으로 투수 데이터를 서버에서 불러옵니다.</p>
             <div style="display:flex; gap:15px; justify-content:center; flex-wrap: wrap;">
-        <!-- 🔥 여기에 드롭다운 메뉴를 추가합니다 -->
-            <select id="practice-pitcher-select" class="top-btn" style="position:static; border-color:#fff; background: rgba(0,0,0,0.5); padding: 12px; font-size: 18px; margin-bottom: 20px; width: auto; color: white;">
-            <option value="오타니">오타니</option>
-            <option value="류현진">류현진</option>
-            <option value="다르빗슈">다르빗슈</option>
-            <option value="스쿠발">스쿠발</option>
-        </select>
-    
-        <button id="btn-practice-mode" class="top-btn" style="position:static; border-color:#48CFAD; background: rgba(0,0,0,0.5); padding: 12px 30px; font-size: 18px; margin-bottom: 20px; transition: 0.3s; width: auto;">🏏 타격 연습장 </button>
-        <button id="btn-show-tutorial" class="top-btn" style="position:static; border-color:#FFCE54; background: rgba(0,0,0,0.5); padding: 12px 30px; font-size: 18px; margin-bottom: 20px; width: auto;">📖 게임 규칙 보기</button>
-    </div>
+                <button id="btn-practice-mode" class="top-btn" style="position:static; border-color:#48CFAD; background: rgba(0,0,0,0.5); padding: 12px 30px; font-size: 18px; margin-bottom: 20px; transition: 0.3s; width: auto;">🏏 타격 연습장 </button>
+                <button id="btn-show-tutorial" class="top-btn" style="position:static; border-color:#FFCE54; background: rgba(0,0,0,0.5); padding: 12px 30px; font-size: 18px; margin-bottom: 20px; width: auto;">📖 게임 규칙 보기</button>
+            </div>
             
             <!-- 게임 종료 결과창 -->
             <div id="game-result-container" class="result-container hidden">
@@ -583,7 +583,31 @@
             }
         }
         
-                /* 연습 모드 (튜토리얼) 로직 */
+        /* 연습 모드 (튜토리얼) 로직 */
+        // 🔥 투수 세팅을 담당하는 함수 분리
+        function setPracticePitcher(isInitial = false) {
+            currentPitcherName = document.getElementById('practice-pitcher-select').value; 
+            let pData = pitcherRoster[currentPitcherName];
+            dataset = pData.csv; pitcherMotionData = pData.json;
+            document.getElementById('pitcher-info').innerText = `⚾ 연습 투수: ${currentPitcherName}`;
+            movementWeight = pData.weight; windupDuration = pData.windup / 1000.0; followThroughDuration = pData.followThrough / 1000.0;
+            setRandomBatter(); updatePitcherTransform(); resetToIdle();
+            
+            setTimeout(() => {
+                if(isInitial) {
+                    showCallPopup("타격 연습장", "#48CFAD", "F 투구 / SPACE 스윙");
+                } else {
+                    showCallPopup("투수 교체", "#4FC1E9", currentPitcherName);
+                }
+                setTimeout(() => { document.getElementById('btn-pitch-main').disabled = false; }, 2000);
+            }, 500);
+        }
+
+        // 🔥 드롭다운에서 투수를 변경하면 즉시 교체
+        document.getElementById('practice-pitcher-select').addEventListener('change', () => {
+            if(isPracticeMode) setPracticePitcher(false);
+        });
+
         document.getElementById('btn-practice-mode').addEventListener('click', () => {
             isPracticeMode = true;
             gameState = 'playing';
@@ -593,21 +617,16 @@
             document.getElementById('giveup-btn').classList.add('hidden');
             document.getElementById('logout-btn').classList.add('hidden');
             document.getElementById('fullscreen-btn').classList.add('hidden'); // 추가: 연습모드시 숨김
+            
+            // 연습 모드 전용 UI 보이기
             document.getElementById('exit-practice-btn').classList.remove('hidden');
+            document.getElementById('practice-pitcher-select').classList.remove('hidden');
             document.getElementById('scoreboard').classList.add('hidden');
             
-            // 드롭다운에서 유저가 선택한 투수를 가져옴
-            currentPitcherName = document.getElementById('practice-pitcher-select').value; 
-            let pData = pitcherRoster[currentPitcherName];
-            dataset = pData.csv; pitcherMotionData = pData.json;
-            document.getElementById('pitcher-info').innerText = `⚾ 연습 투수: ${currentPitcherName}`;
-            movementWeight = pData.weight; windupDuration = pData.windup / 1000.0; followThroughDuration = pData.followThrough / 1000.0;
-            setRandomBatter(); updatePitcherTransform(); resetToIdle();
-            setTimeout(() => {
-                showCallPopup("타격 연습장", "#48CFAD", "F 투구 / SPACE 스윙");
-                setTimeout(() => { document.getElementById('btn-pitch-main').disabled = false; }, 2000);
-            }, 500);
+            // 초기 투수 로드
+            setPracticePitcher(true);
         });
+
         document.getElementById('exit-practice-btn').addEventListener('click', () => {
             isPracticeMode = false;
             gameState = 'intro';
@@ -618,7 +637,10 @@
             document.getElementById('giveup-btn').classList.remove('hidden');
             document.getElementById('logout-btn').classList.remove('hidden');
             document.getElementById('fullscreen-btn').classList.remove('hidden'); // 추가: 복귀시 다시 보임
+            
+            // 연습 모드 전용 UI 숨기기
             document.getElementById('exit-practice-btn').classList.add('hidden');
+            document.getElementById('practice-pitcher-select').classList.add('hidden');
             document.getElementById('scoreboard').classList.remove('hidden');
         });
         
