@@ -201,7 +201,6 @@
                 <div class="stat-grid">
                     <div class="stat-box"><div class="stat-label">최고 점수</div><div class="stat-value highlight-value" id="view-high-score">0</div></div>
                     <div class="stat-box"><div class="stat-label">누적 획득 점수</div><div class="stat-value" id="view-total-score">0</div></div>
-                    <div class="stat-box"><div class="stat-label">통산 타점 (RBI)</div><div class="stat-value" id="view-total-rbi">0</div></div>
                     <div class="stat-box"><div class="stat-label">통산 홈런</div><div class="stat-value" id="view-total-hr">0</div></div>
                     <div class="stat-box"><div class="stat-label">1루타/2루타/3루타/볼넷</div><div class="stat-value" style="font-size:16px; color:#fff;" id="view-hits">0/0/0/0</div></div>
                 </div>
@@ -279,7 +278,6 @@
                     <div class="stat-grid">
                         <div class="stat-box"><div class="stat-label">획득 점수</div><div class="stat-value highlight-value" id="res-score">0</div><div class="stat-label" style="margin-top:5px">최고 <span id="res-high-score">0</span></div></div>
                         <div class="stat-box"><div class="stat-label">누적 점수</div><div class="stat-value" id="res-total-score">0</div><div class="stat-label" style="margin-top:5px">통산 합산</div></div>
-                        <div class="stat-box"><div class="stat-label">타점 (RBI)</div><div class="stat-value" id="res-rbi">0</div><div class="stat-label" style="margin-top:5px">통산 <span id="res-total-rbi">0</span></div></div>
                         <div class="stat-box"><div class="stat-label">홈런</div><div class="stat-value" id="res-hr">0</div><div class="stat-label" style="margin-top:5px">통산 <span id="res-total-hr">0</span></div></div>
                         <div class="stat-box"><div class="stat-label">안타/2루/3루/볼넷</div><div class="stat-value" style="font-size:16px; color:#fff;" id="res-hits">0/0/0/0</div></div>
                     </div>
@@ -352,8 +350,8 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
         
-        let lifetimeStats = { highScore: 0, totalScore: 0, totalHits: 0, totalDoubles: 0, totalTriples: 0, totalHomeruns: 0, totalWalks: 0, totalRBIs: 0 };
-        let currentGameStats = { hits: 0, doubles: 0, triples: 0, homeruns: 0, walks: 0, rbis: 0 };
+        let lifetimeStats = { highScore: 0, totalScore: 0, totalHits: 0, totalDoubles: 0, totalTriples: 0, totalHomeruns: 0, totalWalks: 0 };
+        let currentGameStats = { hits: 0, doubles: 0, triples: 0, homeruns: 0, walks: 0 };
         let currentAtBatPitches = [];
         let isPracticeMode = false;
         let tutorialCompleted = false;
@@ -408,7 +406,7 @@
                 const cred = await createUserWithEmailAndPassword(auth, getFakeEmail(phone), pwd);
                 await setDoc(doc(db, "users", cred.user.uid), {
                     nickname: nick, phone: phone, tutorialCompleted: false,
-                    highScore: 0, totalScore: 0, totalHits: 0, totalDoubles: 0, totalTriples: 0, totalHomeruns: 0, totalWalks: 0, totalRBIs: 0
+                    highScore: 0, totalScore: 0, totalHits: 0, totalDoubles: 0, totalTriples: 0, totalHomeruns: 0, totalWalks: 0
                 });
                 alert('회원가입 완료!');
             } catch (err) { alert('회원가입 실패: ' + err.message); }
@@ -458,7 +456,6 @@
             recordsOverlay.classList.remove('hidden');
             document.getElementById('view-high-score').innerText = lifetimeStats.highScore;
             document.getElementById('view-total-score').innerText = lifetimeStats.totalScore;
-            document.getElementById('view-total-rbi').innerText = lifetimeStats.totalRBIs;
             document.getElementById('view-total-hr').innerText = lifetimeStats.totalHomeruns;
             document.getElementById('view-hits').innerText = `${lifetimeStats.totalHits}/${lifetimeStats.totalDoubles}/${lifetimeStats.totalTriples}/${lifetimeStats.totalWalks}`;
             fetchAndShowRankings();
@@ -474,7 +471,7 @@
                 lifetimeStats = {
                     highScore: data.highScore||0, totalScore: data.totalScore||0, totalHits: data.totalHits||0,
                     totalDoubles: data.totalDoubles||0, totalTriples: data.totalTriples||0, totalHomeruns: data.totalHomeruns||0,
-                    totalWalks: data.totalWalks||0, totalRBIs: data.totalRBIs||0
+                    totalWalks: data.totalWalks||0
                 };
             }
             authOverlay.classList.add('hidden'); gameContainer.classList.remove('hidden');
@@ -574,7 +571,7 @@
             } else {
                 inningRotation = [...PITCHER_NAMES].sort(() => Math.random() - 0.5);
                 currentInning = 1; strikes = 0; balls = 0; outs = 0; score = 0; bases = [false, false, false];
-                currentGameStats = { hits: 0, doubles: 0, triples: 0, homeruns: 0, walks: 0, rbis: 0 };
+                currentGameStats = { hits: 0, doubles: 0, triples: 0, homeruns: 0, walks: 0 };
                 currentAtBatPitches = [];
                 
                 if(localStorage.getItem('isAtBatActive') === 'true') {
@@ -704,11 +701,11 @@
         async function saveGameStatsAndGameOver() {
             localStorage.removeItem('isAtBatActive');
             localStorage.removeItem('savedGameState');
-            lifetimeStats.totalScore += score; lifetimeStats.totalHits += currentGameStats.hits; lifetimeStats.totalDoubles += currentGameStats.doubles; lifetimeStats.totalTriples += currentGameStats.triples; lifetimeStats.totalHomeruns += currentGameStats.homeruns; lifetimeStats.totalWalks += currentGameStats.walks; lifetimeStats.totalRBIs += currentGameStats.rbis;
+            lifetimeStats.totalScore += score; lifetimeStats.totalHits += currentGameStats.hits; lifetimeStats.totalDoubles += currentGameStats.doubles; lifetimeStats.totalTriples += currentGameStats.triples; lifetimeStats.totalHomeruns += currentGameStats.homeruns; lifetimeStats.totalWalks += currentGameStats.walks;
             if(score > lifetimeStats.highScore) lifetimeStats.highScore = score;
-            if (currentUserId) { try { await updateDoc(doc(db, "users", currentUserId), { highScore: lifetimeStats.highScore, totalScore: lifetimeStats.totalScore, totalHits: lifetimeStats.totalHits, totalDoubles: lifetimeStats.totalDoubles, totalTriples: lifetimeStats.totalTriples, totalHomeruns: lifetimeStats.totalHomeruns, totalWalks: lifetimeStats.totalWalks, totalRBIs: lifetimeStats.totalRBIs }); } catch(e) {} }
+            if (currentUserId) { try { await updateDoc(doc(db, "users", currentUserId), { highScore: lifetimeStats.highScore, totalScore: lifetimeStats.totalScore, totalHits: lifetimeStats.totalHits, totalDoubles: lifetimeStats.totalDoubles, totalTriples: lifetimeStats.totalTriples, totalHomeruns: lifetimeStats.totalHomeruns, totalWalks: lifetimeStats.totalWalks }); } catch(e) {} }
             gameState = 'gameover'; document.getElementById('btn-pitch-main').disabled = true; document.getElementById('game-overlay').classList.remove('hidden'); document.getElementById('overlay-title').innerText = "게임 종료!"; document.getElementById('overlay-title').style.color = "#FFCE54"; document.getElementById('overlay-desc').innerText = "최종 기록을 확인하세요.";
-            document.getElementById('res-score').innerText = score; document.getElementById('res-high-score').innerText = lifetimeStats.highScore; document.getElementById('res-total-score').innerText = lifetimeStats.totalScore; document.getElementById('res-rbi').innerText = currentGameStats.rbis; document.getElementById('res-total-rbi').innerText = lifetimeStats.totalRBIs; document.getElementById('res-hr').innerText = currentGameStats.homeruns; document.getElementById('res-total-hr').innerText = lifetimeStats.totalHomeruns; document.getElementById('res-hits').innerText = `${currentGameStats.hits}/${currentGameStats.doubles}/${currentGameStats.triples}/${currentGameStats.walks}`; document.getElementById('game-result-container').classList.remove('hidden');
+            document.getElementById('res-score').innerText = score; document.getElementById('res-high-score').innerText = lifetimeStats.highScore; document.getElementById('res-total-score').innerText = lifetimeStats.totalScore; document.getElementById('res-hr').innerText = currentGameStats.homeruns; document.getElementById('res-total-hr').innerText = lifetimeStats.totalHomeruns; document.getElementById('res-hits').innerText = `${currentGameStats.hits}/${currentGameStats.doubles}/${currentGameStats.triples}/${currentGameStats.walks}`; document.getElementById('game-result-container').classList.remove('hidden');
             fetchAndShowRankings(); document.getElementById('btn-start-game').innerText = "새로운 게임 (리매치)"; document.getElementById('btn-start-game').disabled = false;
         }
         
@@ -721,7 +718,6 @@
         /* 🔥 고도화된 주루 시스템 */
         function advanceBases(hitType) {
             let runsScored = 0;
-            let giveRBI = true;
 
             if (hitType === 'walk') {
                 if (bases[0] && bases[1] && bases[2]) runsScored = 1; 
@@ -765,7 +761,7 @@
             else if (hitType === 'doubleplay') {
                 bases[0] = false; // 1루 주자 아웃
                 if (outs === 0) { // 무사에서 친 병살타
-                    if (bases[2]) { runsScored++; bases[2] = false; giveRBI = false; } 
+                    if (bases[2]) { runsScored++; bases[2] = false; } 
                     if (bases[1]) { bases[2] = true; bases[1] = false; }
                 } else { // 1사에서 친 병살타면 쓰리아웃
                     bases = [false, false, false];
@@ -782,7 +778,7 @@
             else if (hitType === 'groundout_advance') {
                 // 타자는 아웃되지만 주자들은 1베이스씩 진루
                 let nextBases = [false, false, false];
-                if (bases[2]) { runsScored++; giveRBI = true; } // 땅볼로 인한 득점은 타점 인정
+                if (bases[2]) { runsScored++; } // 땅볼로 인한 득점
                 if (bases[1]) { nextBases[2] = true; }
                 bases = nextBases;
             }
@@ -793,7 +789,7 @@
             else if (hitType === 'fielders_choice') {
                 // 선행 주자(1루 주자) 2루에서 포스 아웃, 타자는 1루 생존
                 let nextBases = [true, false, false];
-                if (bases[2]) { runsScored++; giveRBI = true; } // 3루 주자 홈인 시 타점 인정
+                if (bases[2]) { runsScored++; } // 3루 주자 홈인
                 if (bases[1]) { nextBases[2] = true; } // 2루 주자 3루 진루
                 bases = nextBases;
             }
@@ -802,12 +798,10 @@
                 bases[2] = bases[1];
                 bases[1] = bases[0];
                 bases[0] = true;
-                giveRBI = false; // 실책 득점은 타점 아님
             }
 
             if (runsScored > 0 && outs <= 2) {
                 score += runsScored;
-                if (giveRBI) currentGameStats.rbis += runsScored;
             }
         }
         
