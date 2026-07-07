@@ -700,7 +700,21 @@
             popup.innerHTML = `<span style="color:${resultColor}">${resultName}</span>` + timingText; popup.className = "show-swing"; processPitchResult(resultType); setTimeout(() => { popup.className = ''; if (ballState === 'hit') setTimeout(resetToIdle, 200); }, 2000);
         };
         
-        window.addEventListener('keydown', (e) => { if (e.repeat) return; const key = e.key.toLowerCase(); if (e.code === 'Space') { e.preventDefault(); window.swingBat(); } else if (key === 'f') { e.preventDefault(); window.startPitching(); } });
+        window.addEventListener('keydown', (e) => { 
+    if (e.repeat) return; 
+    
+    // 게임 화면이 아니거나(로그인 화면 등), 사용자가 input 태그에 타이핑 중이면 무시
+    if (gameState !== 'playing' || e.target.tagName === 'INPUT') return;
+    
+    // e.key가 undefined인 경우를 방지 (안전한 접근)
+    const key = e.key ? e.key.toLowerCase() : ''; 
+    
+    if (e.code === 'Space') { 
+        e.preventDefault(); window.swingBat(); 
+    } else if (key === 'f') { 
+        e.preventDefault(); window.startPitching(); 
+    } 
+});
         
         let lastRenderTime = 0;
         function animate(currentTime) {
