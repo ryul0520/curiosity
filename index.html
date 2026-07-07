@@ -8,12 +8,12 @@
     <style>
         body { margin: 0; overflow: hidden; background-color: #87CEEB; user-select: none; font-family: 'Malgun Gothic', sans-serif; }
         /* ---------------- 로그인/회원가입/정보수정 UI 스타일 ---------------- */
-        #auth-overlay, #profile-overlay {
+        #auth-overlay, #profile-overlay, #records-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #7FB3D5; z-index: 9999; display: flex;
             flex-direction: column; align-items: center; justify-content: center;
         }
-        #profile-overlay { background: rgba(0, 0, 0, 0.85); z-index: 10000; }
+        #profile-overlay, #records-overlay { background: rgba(0, 0, 0, 0.85); z-index: 10000; }
         .auth-box {
             background: white; padding: 40px; border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3); text-align: center; width: 350px;
@@ -125,7 +125,7 @@
         .stat-value { font-size: 24px; font-weight: 900; color: #4FC1E9; }
         .highlight-value { color: #A0D468; font-size: 32px; text-shadow: 0 0 10px rgba(160,212,104,0.5); }
         /* 랭킹 테이블 */
-        .rank-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .rank-table { width: 100%; border-collapse: collapse; margin-top: 10px; color: white; }
         .rank-table th, .rank-table td { padding: 10px; text-align: center; border-bottom: 1px solid #444; font-size: 15px;}
         .rank-table th { color: #ccc; font-size: 13px; }
         .rank-1 { color: #FFD700; font-weight: bold; font-size: 18px; }
@@ -171,11 +171,50 @@
             <button id="delete-account-btn" class="btn-danger">회원 탈퇴</button>
         </div>
     </div>
+    <!-- 1-2. 인게임 랭킹 및 통산기록 보기 모달창 -->
+    <div id="records-overlay" class="hidden">
+        <div class="result-container" style="background: rgba(15, 20, 25, 0.95); margin-top:0;">
+            <div class="stats-panel">
+                <div class="panel-title">내 통산 기록</div>
+                <div class="stat-grid">
+                    <div class="stat-box">
+                        <div class="stat-label">최고 점수</div>
+                        <div class="stat-value highlight-value" id="view-high-score">0</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">통산 타점 (RBI)</div>
+                        <div class="stat-value" id="view-total-rbi">0</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">통산 홈런</div>
+                        <div class="stat-value" id="view-total-hr">0</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">안타 / 2루 / 3루 / 볼넷</div>
+                        <div class="stat-value" style="font-size:16px; color:#fff;" id="view-hits">0 / 0 / 0 / 0</div>
+                    </div>
+                </div>
+            </div>
+            <div class="rank-panel">
+                <div class="panel-title">🏆 명예의 전당 (최고 점수)</div>
+                <table class="rank-table">
+                    <thead><tr><th>순위</th><th>닉네임</th><th>최고점수</th><th>홈런</th></tr></thead>
+                    <tbody id="view-ranking-tbody">
+                        <tr><td colspan="4">랭킹 불러오는 중...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <button id="close-records-btn" style="margin-top:20px; padding:15px 40px; font-size:20px; font-weight:bold; border-radius:12px; cursor:pointer; background:#ED5565; color:#fff; border:none; box-shadow: 0 4px 10px rgba(0,0,0,0.5);">닫기</button>
+    </div>
+
     <!-- 2. 게임 전체 컨테이너 -->
     <div id="game-container" class="hidden">
         <!-- 🔥 로그인 후에 왼쪽 상단에 보이는 "정보수정" 및 "로그아웃" 버튼 🔥 -->
         <div class="top-btn-group">
-            <button class="top-btn" id="profile-btn">⚙️ 내 정보 설정 (수정/탈퇴)</button>
+            <button class="top-btn" id="profile-btn">⚙️ 내 정보 설정</button>
+            <!-- 새로 추가된 랭킹 및 내기록 보기 버튼 -->
+            <button class="top-btn" id="records-btn" style="border-color:#A0D468;">🏆 랭킹 및 통산기록</button>
             <button class="top-btn" id="logout-btn">로그아웃</button>
         </div>
         <div id="game-overlay">
@@ -304,7 +343,7 @@
             if (!/^010[0-9]{8}$/.test(phone)) return alert('경고: 전화번호는 010으로 시작하는 11자리 숫자여야 합니다.');
             if (pwd.length < 6) return alert('경고: 비밀번호는 최소 6자리 이상이어야 합니다.');
             if (pwd !== pwdConfirm) return alert('경고: 비밀번호가 서로 일치하지 않습니다.');
-            if (nick === '') return alert('경고: 닉네임을 전력해주세요.');
+            if (nick === '') return alert('경고: 닉네임을 입력해주세요.');
             try {
                 const q = query(collection(db, "users"), where("nickname", "==", nick));
                 const qs = await getDocs(q);
@@ -354,7 +393,6 @@
                 const batterInfoEl = document.getElementById('batter-info');
                 if (batterInfoEl) batterInfoEl.innerText = `🏏 타자: ${currentUserNickname} (${isLeftBatter ? '좌타' : '우타'})`;
                 
-                // 🔥 수정된 닉네임이 오버레이 화면에 즉시 반영되도록 변경
                 const welcomeNickEl = document.getElementById('welcome-nick');
                 if (welcomeNickEl) welcomeNickEl.innerText = currentUserNickname;
                 
@@ -369,9 +407,7 @@
             try {
                 const user = auth.currentUser;
                 if (!user) return alert('로그인 정보를 찾을 수 없습니다.');
-                // Firestore 문서 삭제
                 await deleteDoc(doc(db, "users", user.uid));
-                // Auth 계정 삭제
                 await deleteUser(user);
                 alert("회원 탈퇴가 완료되었습니다. 이용해 주셔서 감사합니다.");
                 location.reload();
@@ -382,6 +418,28 @@
                 } else { alert("탈퇴 처리 중 오류가 발생했습니다: " + error.message); }
             }
         });
+
+        /* ==================== 인게임 랭킹 및 내 기록 보기 (모달창) ==================== */
+        const recordsBtn = document.getElementById('records-btn');
+        const recordsOverlay = document.getElementById('records-overlay');
+        const closeRecordsBtn = document.getElementById('close-records-btn');
+
+        recordsBtn.addEventListener('click', () => {
+            recordsOverlay.classList.remove('hidden');
+            // 기록 UI 업데이트
+            document.getElementById('view-high-score').innerText = lifetimeStats.highScore;
+            document.getElementById('view-total-rbi').innerText = lifetimeStats.totalRBIs;
+            document.getElementById('view-total-hr').innerText = lifetimeStats.totalHomeruns;
+            document.getElementById('view-hits').innerText = `${lifetimeStats.totalHits} / ${lifetimeStats.totalDoubles} / ${lifetimeStats.totalTriples} / ${lifetimeStats.totalWalks}`;
+            
+            // 랭킹 불러오기
+            fetchAndShowRankings();
+        });
+
+        closeRecordsBtn.addEventListener('click', () => {
+            recordsOverlay.classList.add('hidden');
+        });
+
         // DB에서 통산 기록 불러오기
         async function fetchUserDataAndEnter(uid) {
             currentUserId = uid;
@@ -403,7 +461,6 @@
             authOverlay.classList.add('hidden');
             gameContainer.classList.remove('hidden');
             
-            // 로그인 후 UI 표시 설정
             const welcomeNickEl = document.getElementById('welcome-nick');
             if (welcomeNickEl) welcomeNickEl.innerText = currentUserNickname;
             document.getElementById('overlay-desc').innerText = "자동으로 투수 데이터를 서버에서 불러옵니다.";
@@ -414,14 +471,18 @@
             if (user) fetchUserDataAndEnter(user.uid);
             else { authOverlay.classList.remove('hidden'); loginBox.classList.remove('hidden'); signupBox.classList.add('hidden'); }
         });
+
         /* ==================== 랭킹 시스템 (5분 캐싱) ==================== */
         let lastRankFetchTime = 0;
         let cachedRankHTML = "";
         async function fetchAndShowRankings() {
             const now = Date.now();
-            const tbody = document.getElementById('ranking-tbody');
+            const tbody1 = document.getElementById('ranking-tbody');
+            const tbody2 = document.getElementById('view-ranking-tbody'); // 보기 모달의 tbody
+            
             if (now - lastRankFetchTime < 300000 && cachedRankHTML !== "") {
-                tbody.innerHTML = cachedRankHTML;
+                if(tbody1) tbody1.innerHTML = cachedRankHTML;
+                if(tbody2) tbody2.innerHTML = cachedRankHTML;
                 return;
             }
             try {
@@ -434,13 +495,22 @@
                     html += `<tr><td class="${rClass}">${rank}</td><td>${d.nickname}</td><td style="color:#4FC1E9; font-weight:bold;">${d.highScore || 0}</td><td>${d.totalHomeruns || 0}</td></tr>`;
                     rank++;
                 });
-                cachedRankHTML = html; lastRankFetchTime = now; tbody.innerHTML = cachedRankHTML;
+                cachedRankHTML = html; lastRankFetchTime = now; 
+                if(tbody1) tbody1.innerHTML = cachedRankHTML;
+                if(tbody2) tbody2.innerHTML = cachedRankHTML;
             } catch (e) {
                 console.error(e);
-                if(cachedRankHTML) tbody.innerHTML = cachedRankHTML;
-                else tbody.innerHTML = "<tr><td colspan='4'>랭킹을 불러오지 못했습니다.</td></tr>";
+                const errorHTML = "<tr><td colspan='4'>랭킹을 불러오지 못했습니다.</td></tr>";
+                if(cachedRankHTML) {
+                    if(tbody1) tbody1.innerHTML = cachedRankHTML;
+                    if(tbody2) tbody2.innerHTML = cachedRankHTML;
+                } else {
+                    if(tbody1) tbody1.innerHTML = errorHTML;
+                    if(tbody2) tbody2.innerHTML = errorHTML;
+                }
             }
         }
+
         /* ========================================================= */
         /* 게임 기본 로직 (Three.js 및 야구 시뮬레이션)              */
         /* ========================================================= */
@@ -454,7 +524,7 @@
             "다르빗슈": { csv: [], json: null, hand: 'R', weight: 1.5, windup: 1200, followThrough: 450 },
             "류현진": { csv: [], json: null, hand: 'L', weight: 1.5, windup: 2000, followThrough: 830 },
             "오타니": { csv: [], json: null, hand: 'R', weight: 1.7, windup: 900, followThrough: 250 },
-            "스쿠발": { csv: [], json: null, hand: 'L', weight: 1.6, windup: 900, followThrough: 180 }
+            "스쿠발": { csv: [], json: null, hand: 'L', weight: 1.6, windup: 900, followThrough: 120 } // 🔥 기존 180에서 2/3 속도인 120으로 변경
         };
         let inningRotation = []; let currentPitcherName = ""; let dataset = []; let pitcherMotionData = null;
         function parseCSVDataString(csvText) {
@@ -476,20 +546,19 @@
             return parsedData;
         }
         
-        /* 🔥 파일 읽기 문제 해결 (Mac/Win 호환성) 🔥 */
+        /* 파일 읽기 문제 해결 (Mac/Win 호환성) */
         window.loadAllPitcherData = async function() {
             let allReady = true;
             for (let p of PITCHER_NAMES) {
                 let el = document.getElementById(`status-${p}`);
                 el.innerText = `⏳ ${p} 데이터 불러오는 중...`; el.className = "status-off";
                 try {
-                    // 맥(Mac)과 윈도우(Windows) 한글 인코딩 문제를 모두 잡기 위해 두 번 시도합니다.
                     let csvRes = await fetch(`./${p}.csv`);
-                    if (!csvRes.ok) csvRes = await fetch(`./${p.normalize('NFD')}.csv`); // Mac 호환
+                    if (!csvRes.ok) csvRes = await fetch(`./${p.normalize('NFD')}.csv`);
                     if (csvRes.ok) { let csvText = await csvRes.text(); pitcherRoster[p].csv = parseCSVDataString(csvText); }
                     
                     let jsonRes = await fetch(`./${p}.json`);
-                    if (!jsonRes.ok) jsonRes = await fetch(`./${p.normalize('NFD')}.json`); // Mac 호환
+                    if (!jsonRes.ok) jsonRes = await fetch(`./${p.normalize('NFD')}.json`);
                     if (jsonRes.ok) { let jsonText = await jsonRes.text(); pitcherRoster[p].json = JSON.parse(jsonText); }
                     
                     if (pitcherRoster[p].csv.length > 0) {
@@ -509,7 +578,7 @@
         let isPitchingActive = false; let callPopupActive = false; let gameState = 'intro';
         let currentInning = 1; const maxInning = 4;
         let strikes = 0, balls = 0, outs = 0; let score = 0; let bases = [false, false, false];
-        let currentPitchRecord = null; // 현재 공의 기록용 객체
+        let currentPitchRecord = null;
         const battingProbabilities = {
             "Ball": { whiff: 41.16, foul: 34.99, single: 5.22, double: 0.98, triple: 0.09, homerun: 0.47, out: 17.09 },
             "1": { whiff: 19.12, foul: 47.31, single: 6.68, double: 2.04, triple: 0.18, homerun: 1.60, out: 23.08 },
@@ -610,8 +679,6 @@
             document.getElementById('game-overlay').classList.remove('hidden');
             document.getElementById('overlay-title').innerText = "게임 종료!";
             document.getElementById('overlay-title').style.color = "#FFCE54";
-            
-            // 게임 종료 시 설명 문구만 "최종 기록을 확인하세요."로 덮어씌움. (닉네임 표시는 상단에 그대로 남음)
             document.getElementById('overlay-desc').innerText = "최종 기록을 확인하세요.";
             
             document.getElementById('res-score').innerText = score;
@@ -790,7 +857,9 @@
             currentPitch.vz0 = v0; const targetX = dataRow.plateX * FT_TO_M; const targetY = dataRow.plateZ * FT_TO_M; currentPitch.vx0 = (targetX - currentPitch.x0 - 0.5 * currentPitch.ax * targetT * targetT) / targetT; currentPitch.vy0 = (targetY - currentPitch.y0 - 0.5 * currentPitch.ay * targetT * targetT) / targetT;
             if (pitcherMotionData) { releaseFrameIndex = pitcherMotionData.findIndex(f => f.isReleasePoint === true); if (releaseFrameIndex === -1) releaseFrameIndex = Math.floor(pitcherMotionData.length * 0.7); }
             updatePitcherTransform(); document.getElementById('speed-display').innerText = "???"; document.getElementById('speed-display').style.color = "#777"; document.getElementById('pitch-name').innerText = "투구 준비 중..."; pitchStartTime = performance.now(); pitchThrownThisPlay = false; ballState = 'prepare';
-            currentPitchRecord = { pitchName: currentPitch.name, speedKm: currentPitch.speedKm, isStrikeZone: false, swung: false, timingMs: null, result: null };
+            
+            // 🔥 파이어베이스 기록용 초기화 (좌표 공간 추가)
+            currentPitchRecord = { pitchName: currentPitch.name, speedKm: currentPitch.speedKm, isStrikeZone: false, crossX: null, crossY: null, swung: false, timingMs: null, result: null };
         }
         function throwPitch() { ball.position.set(currentPitch.x0, currentPitch.y0, currentPitch.z0); ball.visible = true; document.getElementById('speed-display').innerText = currentPitch.speedKm + " km/h"; document.getElementById('speed-display').style.color = "#FFCE54"; document.getElementById('pitch-name').innerText = currentPitch.name; t = 0; ballState = 'pitching'; }
         function resetToIdle() { ballState = 'idle'; ball.visible = false; borderMarker.visible = false; if(!pitcherMotionData) drawPitcherState(0); else drawJSONPitcherState(0); drawBatterState(0); callPopupActive = false; isPitchingActive = false; if (gameState === 'playing') document.getElementById('btn-pitch-main').disabled = false; }
@@ -832,7 +901,26 @@
             if (ballState === 'pitching' && currentPitch) {
                 let prevT = t; t += safeDt; const prevPos = getPosition(currentPitch, prevT); const pos = getPosition(currentPitch, t); ball.position.set(pos.x, pos.y, pos.z); const visualSpinRate = currentPitch.speedKm / 3.0;
                 ball.rotation.x += currentPitch.spinAxis.x * visualSpinRate * safeDt; ball.rotation.y += currentPitch.spinAxis.y * visualSpinRate * safeDt; ball.rotation.z += currentPitch.spinAxis.z * visualSpinRate * safeDt;
-                if (!zoneCrossed && prevPos.z < absZone.zFront && pos.z >= absZone.zFront) { zoneCrossed = true; let ratio = (absZone.zFront - prevPos.z) / (pos.z - prevPos.z); crossX = prevPos.x + (pos.x - prevPos.x) * ratio; crossY = prevPos.y + (pos.y - prevPos.y) * ratio; let isStrikeZone = (getZoneNumber(crossX, crossY) !== "Ball"); borderMarker.position.set(crossX, crossY, absZone.zFront + 0.005); borderMarker.material.color.setHex(isStrikeZone ? 0xFFCE54 : 0xA0D468); borderMarker.visible = true; }
+                
+                // 🔥 공이 스트라이크 존(Z축)을 넘어갈 때 좌표 기록 처리 추가
+                if (!zoneCrossed && prevPos.z < absZone.zFront && pos.z >= absZone.zFront) { 
+                    zoneCrossed = true; 
+                    let ratio = (absZone.zFront - prevPos.z) / (pos.z - prevPos.z); 
+                    crossX = prevPos.x + (pos.x - prevPos.x) * ratio; 
+                    crossY = prevPos.y + (pos.y - prevPos.y) * ratio; 
+                    let isStrikeZone = (getZoneNumber(crossX, crossY) !== "Ball"); 
+                    
+                    // 파이어베이스에 저장할 정확한 좌표 기록
+                    if (currentPitchRecord) {
+                        currentPitchRecord.crossX = Number(crossX.toFixed(4));
+                        currentPitchRecord.crossY = Number(crossY.toFixed(4));
+                    }
+                    
+                    borderMarker.position.set(crossX, crossY, absZone.zFront + 0.005); 
+                    borderMarker.material.color.setHex(isStrikeZone ? 0xFFCE54 : 0xA0D468); 
+                    borderMarker.visible = true; 
+                }
+                
                 if (t > targetT + 0.4 && !callMade) {
                     callMade = true; let isStrike = (getZoneNumber(crossX, crossY) !== "Ball");
                     if (currentPitchRecord) { currentPitchRecord.isStrikeZone = isStrike; currentPitchRecord.swung = false; }
